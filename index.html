@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math++ | Learning Platform</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* YOUR EXISTING CSS STAYS EXACTLY THE SAME */
         :root {
             --primary: #6366f1;
             --secondary: #8b5cf6;
@@ -340,6 +340,14 @@
             font-weight: 500;
         }
 
+        .chart-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
         @media (max-width: 1024px) {
             .main-layout {
                 grid-template-columns: 1fr;
@@ -406,6 +414,7 @@
             </nav>
 
             <main class="content-area">
+                <!-- Dashboard -->
                 <div id="dashboard" class="module active">
                     <div class="module-header">
                         <i class="module-icon fas fa-home"></i>
@@ -463,6 +472,7 @@
                     </div>
                 </div>
 
+                <!-- Arithmetic -->
                 <div id="arithmetic" class="module">
                     <div class="module-header">
                         <i class="module-icon fas fa-plus-minus"></i>
@@ -512,6 +522,185 @@
                     </div>
                 </div>
 
+                <!-- Algebra -->
+                <div id="algebra" class="module">
+                    <div class="module-header">
+                        <i class="module-icon fas fa-square-root-variable"></i>
+                        <h2 class="module-title">Algebra Calculator</h2>
+                    </div>
+                    
+                    <div class="calculator-grid">
+                        <div class="calc-card">
+                            <div class="calc-title">Linear Equation Solver</div>
+                            <div class="input-group">
+                                <label>Enter equation: ax + b = c</label>
+                                <input type="number" id="linearA" placeholder="a" value="2">
+                                <input type="number" id="linearB" placeholder="b" value="5">
+                                <input type="number" id="linearC" placeholder="c" value="13">
+                            </div>
+                            <button onclick="solveLinear()">Solve Equation</button>
+                            <div id="linearResult" class="result"></div>
+                        </div>
+
+                        <div class="calc-card">
+                            <div class="calc-title">Quadratic Equation Solver</div>
+                            <div class="input-group">
+                                <label>Enter coefficients: ax² + bx + c = 0</label>
+                                <input type="number" id="quadA" placeholder="a" value="1">
+                                <input type="number" id="quadB" placeholder="b" value="-3">
+                                <input type="number" id="quadC" placeholder="c" value="2">
+                            </div>
+                            <button onclick="solveQuadratic()">Solve Quadratic</button>
+                            <div id="quadraticResult" class="result"></div>
+                        </div>
+
+                        <div class="calc-card">
+                            <div class="calc-title">System of Equations</div>
+                            <div class="input-group">
+                                <label>Equation 1: a₁x + b₁y = c₁</label>
+                                <input type="number" id="sysA1" placeholder="a₁" value="2">
+                                <input type="number" id="sysB1" placeholder="b₁" value="3">
+                                <input type="number" id="sysC1" placeholder="c₁" value="7">
+                            </div>
+                            <div class="input-group">
+                                <label>Equation 2: a₂x + b₂y = c₂</label>
+                                <input type="number" id="sysA2" placeholder="a₂" value="1">
+                                <input type="number" id="sysB2" placeholder="b₂" value="-1">
+                                <input type="number" id="sysC2" placeholder="c₂" value="1">
+                            </div>
+                            <button onclick="solveSystem()">Solve System</button>
+                            <div id="systemResult" class="result"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Matrices -->
+                <div id="matrices" class="module">
+                    <div class="module-header">
+                        <i class="module-icon fas fa-table"></i>
+                        <h2 class="module-title">Matrix Calculator</h2>
+                    </div>
+                    
+                    <div class="calculator-grid">
+                        <div class="calc-card">
+                            <div class="calc-title">Matrix Addition</div>
+                            <div class="input-group">
+                                <label>Matrix A (2x2)</label>
+                                <div class="matrix-input">
+                                    <div class="matrix-row">
+                                        <input type="number" id="addA11" value="1">
+                                        <input type="number" id="addA12" value="2">
+                                    </div>
+                                    <div class="matrix-row">
+                                        <input type="number" id="addA21" value="3">
+                                        <input type="number" id="addA22" value="4">
+                                    </div>
+                                </div>
+                                <label>Matrix B (2x2)</label>
+                                <div class="matrix-input">
+                                    <div class="matrix-row">
+                                        <input type="number" id="addB11" value="5">
+                                        <input type="number" id="addB12" value="6">
+                                    </div>
+                                    <div class="matrix-row">
+                                        <input type="number" id="addB21" value="7">
+                                        <input type="number" id="addB22" value="8">
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="matrixOperation('add')">Add Matrices</button>
+                            <div id="matrixAddResult" class="result"></div>
+                        </div>
+
+                        <div class="calc-card">
+                            <div class="calc-title">Matrix Multiplication</div>
+                            <div class="input-group">
+                                <label>Matrix A (2x2)</label>
+                                <div class="matrix-input">
+                                    <div class="matrix-row">
+                                        <input type="number" id="multA11" value="1">
+                                        <input type="number" id="multA12" value="2">
+                                    </div>
+                                    <div class="matrix-row">
+                                        <input type="number" id="multA21" value="3">
+                                        <input type="number" id="multA22" value="4">
+                                    </div>
+                                </div>
+                                <label>Matrix B (2x2)</label>
+                                <div class="matrix-input">
+                                    <div class="matrix-row">
+                                        <input type="number" id="multB11" value="2">
+                                        <input type="number" id="multB12" value="0">
+                                    </div>
+                                    <div class="matrix-row">
+                                        <input type="number" id="multB21" value="1">
+                                        <input type="number" id="multB22" value="2">
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="matrixOperation('multiply')">Multiply Matrices</button>
+                            <div id="matrixMultResult" class="result"></div>
+                        </div>
+
+                        <div class="calc-card">
+                            <div class="calc-title">Matrix Determinant</div>
+                            <div class="input-group">
+                                <label>Matrix (2x2)</label>
+                                <div class="matrix-input">
+                                    <div class="matrix-row">
+                                        <input type="number" id="det11" value="4">
+                                        <input type="number" id="det12" value="3">
+                                    </div>
+                                    <div class="matrix-row">
+                                        <input type="number" id="det21" value="2">
+                                        <input type="number" id="det22" value="1">
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="matrixOperation('determinant')">Calculate Determinant</button>
+                            <div id="matrixDetResult" class="result"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graphs -->
+                <div id="graphs" class="module">
+                    <div class="module-header">
+                        <i class="module-icon fas fa-chart-line"></i>
+                        <h2 class="module-title">Function Graphs</h2>
+                    </div>
+                    
+                    <div class="calculator-grid">
+                        <div class="calc-card">
+                            <div class="calc-title">Linear Function Graph</div>
+                            <div class="input-group">
+                                <label>y = mx + b</label>
+                                <input type="number" id="linearM" placeholder="Slope (m)" value="2">
+                                <input type="number" id="linearB" placeholder="Intercept (b)" value="1">
+                            </div>
+                            <button onclick="plotLinear()">Plot Graph</button>
+                            <div class="chart-container">
+                                <canvas id="linearChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="calc-card">
+                            <div class="calc-title">Quadratic Function Graph</div>
+                            <div class="input-group">
+                                <label>y = ax² + bx + c</label>
+                                <input type="number" id="quadGraphA" placeholder="a" value="1">
+                                <input type="number" id="quadGraphB" placeholder="b" value="0">
+                                <input type="number" id="quadGraphC" placeholder="c" value="0">
+                            </div>
+                            <button onclick="plotQuadratic()">Plot Graph</button>
+                            <div class="chart-container">
+                                <canvas id="quadraticChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz -->
                 <div id="quiz" class="module">
                     <div class="module-header">
                         <i class="module-icon fas fa-brain"></i>
@@ -530,13 +719,38 @@
                     </div>
                 </div>
 
+                <!-- Progress -->
+                <div id="progress" class="module">
+                    <div class="module-header">
+                        <i class="module-icon fas fa-trophy"></i>
+                        <h2 class="module-title">Learning Progress</h2>
+                    </div>
+                    
+                    <div class="calculator-grid">
+                        <div class="calc-card">
+                            <div class="calc-title">Progress Overview</div>
+                            <div class="chart-container">
+                                <canvas id="progressChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="calc-card">
+                            <div class="calc-title">Achievements</div>
+                            <div class="result">
+                                <p>🎯 Arithmetic Master: Complete 50 problems</p>
+                                <p>📈 Algebra Expert: Solve 20 equations</p>
+                                <p>🏆 Matrix Guru: Perform 15 operations</p>
+                                <p>⭐ Quiz Champion: Score 90% or higher</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </main>
         </div>
     </div>
 
     <script>
-        // REMOVED: const API_BASE = 'http://localhost:5000/api';
-
+        // Module Navigation
         function showModule(moduleId) {
             document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -547,6 +761,7 @@
             updateStats();
         }
 
+        // Arithmetic Functions
         function calculate(operation) {
             const inputIds = {
                 'add': 'addNumbers',
@@ -563,7 +778,6 @@
                 return;
             }
 
-            // DIRECT JAVASCRIPT CALCULATIONS - NO BACKEND NEEDED
             let result;
             const operations = {'add': '+', 'subtract': '-', 'multiply': '×', 'divide': '÷'};
             const expression = numbers.join(` ${operations[operation]} `);
@@ -593,17 +807,214 @@
             document.getElementById(operation + 'Result').innerHTML = message;
         }
 
-        function updateStats() {
-            document.getElementById('totalProblems').textContent = 
-                Math.floor(Math.random() * 100) + 50;
-            document.getElementById('accuracyRate').textContent = 
-                Math.floor(Math.random() * 30) + 70 + '%';
-            document.getElementById('streakCount').textContent = 
-                Math.floor(Math.random() * 10) + 1;
-            document.getElementById('timeSpent').textContent = 
-                Math.floor(Math.random() * 50) + 10 + 'h';
+        // Algebra Functions
+        function solveLinear() {
+            const a = parseFloat(document.getElementById('linearA').value);
+            const b = parseFloat(document.getElementById('linearB').value);
+            const c = parseFloat(document.getElementById('linearC').value);
+            
+            if (a === 0) {
+                document.getElementById('linearResult').innerHTML = '<span class="error">Error: Coefficient a cannot be zero</span>';
+                return;
+            }
+            
+            const x = (c - b) / a;
+            document.getElementById('linearResult').innerHTML = `<span class="success">Solution: x = ${x}</span>`;
         }
 
+        function solveQuadratic() {
+            const a = parseFloat(document.getElementById('quadA').value);
+            const b = parseFloat(document.getElementById('quadB').value);
+            const c = parseFloat(document.getElementById('quadC').value);
+            
+            if (a === 0) {
+                document.getElementById('quadraticResult').innerHTML = '<span class="error">Error: This is not a quadratic equation (a = 0)</span>';
+                return;
+            }
+            
+            const discriminant = b * b - 4 * a * c;
+            
+            if (discriminant > 0) {
+                const x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                const x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                document.getElementById('quadraticResult').innerHTML = `<span class="success">Two real solutions: x₁ = ${x1.toFixed(2)}, x₂ = ${x2.toFixed(2)}</span>`;
+            } else if (discriminant === 0) {
+                const x = -b / (2 * a);
+                document.getElementById('quadraticResult').innerHTML = `<span class="success">One real solution: x = ${x.toFixed(2)}</span>`;
+            } else {
+                const realPart = (-b / (2 * a)).toFixed(2);
+                const imaginaryPart = (Math.sqrt(-discriminant) / (2 * a)).toFixed(2);
+                document.getElementById('quadraticResult').innerHTML = `<span class="success">Complex solutions: x = ${realPart} ± ${imaginaryPart}i</span>`;
+            }
+        }
+
+        function solveSystem() {
+            const a1 = parseFloat(document.getElementById('sysA1').value);
+            const b1 = parseFloat(document.getElementById('sysB1').value);
+            const c1 = parseFloat(document.getElementById('sysC1').value);
+            const a2 = parseFloat(document.getElementById('sysA2').value);
+            const b2 = parseFloat(document.getElementById('sysB2').value);
+            const c2 = parseFloat(document.getElementById('sysC2').value);
+            
+            const determinant = a1 * b2 - a2 * b1;
+            
+            if (determinant === 0) {
+                document.getElementById('systemResult').innerHTML = '<span class="error">No unique solution (determinant is zero)</span>';
+                return;
+            }
+            
+            const x = (c1 * b2 - c2 * b1) / determinant;
+            const y = (a1 * c2 - a2 * c1) / determinant;
+            
+            document.getElementById('systemResult').innerHTML = `<span class="success">Solution: x = ${x.toFixed(2)}, y = ${y.toFixed(2)}</span>`;
+        }
+
+        // Matrix Functions
+        function matrixOperation(operation) {
+            try {
+                let result;
+                
+                if (operation === 'add') {
+                    const A = [
+                        [parseFloat(document.getElementById('addA11').value), parseFloat(document.getElementById('addA12').value)],
+                        [parseFloat(document.getElementById('addA21').value), parseFloat(document.getElementById('addA22').value)]
+                    ];
+                    const B = [
+                        [parseFloat(document.getElementById('addB11').value), parseFloat(document.getElementById('addB12').value)],
+                        [parseFloat(document.getElementById('addB21').value), parseFloat(document.getElementById('addB22').value)]
+                    ];
+                    
+                    result = [
+                        [A[0][0] + B[0][0], A[0][1] + B[0][1]],
+                        [A[1][0] + B[1][0], A[1][1] + B[1][1]]
+                    ];
+                    
+                    document.getElementById('matrixAddResult').innerHTML = `<span class="success">Result:<br>[
+                        [${result[0][0]}, ${result[0][1]}],<br>
+                        [${result[1][0]}, ${result[1][1]}]
+                    ]</span>`;
+                    
+                } else if (operation === 'multiply') {
+                    const A = [
+                        [parseFloat(document.getElementById('multA11').value), parseFloat(document.getElementById('multA12').value)],
+                        [parseFloat(document.getElementById('multA21').value), parseFloat(document.getElementById('multA22').value)]
+                    ];
+                    const B = [
+                        [parseFloat(document.getElementById('multB11').value), parseFloat(document.getElementById('multB12').value)],
+                        [parseFloat(document.getElementById('multB21').value), parseFloat(document.getElementById('multB22').value)]
+                    ];
+                    
+                    result = [
+                        [A[0][0]*B[0][0] + A[0][1]*B[1][0], A[0][0]*B[0][1] + A[0][1]*B[1][1]],
+                        [A[1][0]*B[0][0] + A[1][1]*B[1][0], A[1][0]*B[0][1] + A[1][1]*B[1][1]]
+                    ];
+                    
+                    document.getElementById('matrixMultResult').innerHTML = `<span class="success">Result:<br>[
+                        [${result[0][0]}, ${result[0][1]}],<br>
+                        [${result[1][0]}, ${result[1][1]}]
+                    ]</span>`;
+                    
+                } else if (operation === 'determinant') {
+                    const a = parseFloat(document.getElementById('det11').value);
+                    const b = parseFloat(document.getElementById('det12').value);
+                    const c = parseFloat(document.getElementById('det21').value);
+                    const d = parseFloat(document.getElementById('det22').value);
+                    
+                    result = a * d - b * c;
+                    document.getElementById('matrixDetResult').innerHTML = `<span class="success">Determinant = ${result}</span>`;
+                }
+                
+            } catch (error) {
+                document.getElementById('matrix' + operation.charAt(0).toUpperCase() + operation.slice(1) + 'Result').innerHTML = 
+                    '<span class="error">Error: Please check your inputs</span>';
+            }
+        }
+
+        // Graph Functions
+        function plotLinear() {
+            const m = parseFloat(document.getElementById('linearM').value);
+            const b = parseFloat(document.getElementById('linearB').value);
+            
+            const ctx = document.getElementById('linearChart').getContext('2d');
+            const xValues = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+            const yValues = xValues.map(x => m * x + b);
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        label: `y = ${m}x + ${b}`,
+                        data: yValues,
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderWidth: 2,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Linear Function Graph'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'x' }
+                        },
+                        y: {
+                            title: { display: true, text: 'y' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function plotQuadratic() {
+            const a = parseFloat(document.getElementById('quadGraphA').value);
+            const b = parseFloat(document.getElementById('quadGraphB').value);
+            const c = parseFloat(document.getElementById('quadGraphC').value);
+            
+            const ctx = document.getElementById('quadraticChart').getContext('2d');
+            const xValues = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+            const yValues = xValues.map(x => a * x * x + b * x + c);
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        label: `y = ${a}x² + ${b}x + ${c}`,
+                        data: yValues,
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        borderWidth: 2,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Quadratic Function Graph'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'x' }
+                        },
+                        y: {
+                            title: { display: true, text: 'y' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Quiz Functions
         const quizQuestions = [
             {"question": "5 + 7 =", "answer": "12"},
             {"question": "12 - 8 =", "answer": "4"},
@@ -663,6 +1074,19 @@
             updateStats();
         }
 
+        // Progress Functions
+        function updateStats() {
+            document.getElementById('totalProblems').textContent = 
+                Math.floor(Math.random() * 100) + 50;
+            document.getElementById('accuracyRate').textContent = 
+                Math.floor(Math.random() * 30) + 70 + '%';
+            document.getElementById('streakCount').textContent = 
+                Math.floor(Math.random() * 10) + 1;
+            document.getElementById('timeSpent').textContent = 
+                Math.floor(Math.random() * 50) + 10 + 'h';
+        }
+
+        // Initialize
         updateStats();
     </script>
 </body>
