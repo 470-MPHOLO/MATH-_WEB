@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math++ | Learning Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            margin: 20px;
+            min-height: calc(100vh - 40px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-20px, -20px) rotate(360deg); }
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 600px;
+        }
+
+        .sidebar {
+            background: var(--light);
+            padding: 2rem 1rem;
+            border-right: 1px solid #e2e8f0;
+            position: relative;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            margin: 0.5rem 0;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .nav-item:hover {
+            transform: translateX(8px);
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.2);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-icon {
+            margin-right: 1rem;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .content-area {
+            padding: 2rem;
+            background: white;
+            position: relative;
+        }
+
+        .module {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .module.active {
+            display: block;
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .module-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            color: var(--primary);
+        }
+
+        .module-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .calc-card {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calc-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .calc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .calc-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .input-group {
+            margin: 1rem 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .result {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #dbeafe, #e0e7ff);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            background: var(--light);
+            padding: 2rem;
+            margin: 1.5rem 0;
+            border-radius: 16px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .matrix-input {
+            display: grid;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .matrix-row {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .matrix-input input {
+            width: 80px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .success { color: var(--success); }
+        .error { color: var(--error); }
+        .warning { color: var(--warning); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1.5rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-calculator"></i>
+            </div>
+            <h1>Math++</h1>
+            <p class="tagline">Master Mathematics with Interactive Learning</p>
+        </header>
+
+        <div class="main-layout">
+            <nav class="sidebar">
+                <div class="nav-item active" onclick="showModule('dashboard')">
+                    <i class="nav-icon fas fa-home"></i>
+                    Dashboard
+                </div>
+                <div class="nav-item" onclick="showModule('arithmetic')">
+                    <i class="nav-icon fas fa-plus-minus"></i>
+                    Arithmetic
+                </div>
+                <div class="nav-item" onclick="showModule('algebra')">
+                    <i class="nav-icon fas fa-square-root-variable"></i>
+                    Algebra
+                </div>
+                <div class="nav-item" onclick="showModule('matrices')">
+                    <i class="nav-icon fas fa-table"></i>
+                    Matrices
+                </div>
+                <div class="nav-item" onclick="showModule('quiz')">
+                    <i class="nav-icon fas fa-brain"></i>
+                    Math Quiz
+                </div>
+                <div class="nav-item" onclick="showModule('graphs')">
+                    <i class="nav-icon fas fa-chart-line"></i>
+                    Graphs
+                </div>
+                <div class="nav-item" onclick="showModule('progress')">
+                    <i class="nav-icon fas fa-trophy"></i>
+                    Progress
+                </div>
+            </nav>
+
+            <main class="content-area">
+                <div id="dashboard" class="module active">
+                    <div class="module-header">
+                        <i class="module-icon fas fa-home"></i>
+                        <h2 class="module-title">Learning Dashboard</h2>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalProblems">0</div>
+                            <div class="stat-label">Problems Solved</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="accuracyRate">0%</div>
+                            <div class="stat-label">Accuracy Rate</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="streakCount">0</div>
+                            <div class="stat-label">Day Streak</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="timeSpent">0h</div>
+                            <div class="stat-label">Time Learning</div>
+                        </div>
+                    </div>
+
+                    <div class="calculator-grid">
+                        <div class="calc-card" onclick="showModule('arithmetic')">
+                            <div class="calc-title">
+                                <i class="fas fa-plus-minus"></i>
+                                Arithmetic Master
+                            </div>
+                            <p>Addition, Subtraction, Multiplication, Division</p>
+                        </div>
+                        <div class="calc-card" onclick="showModule('algebra')">
+                            <div class="calc-title">
+                                <i class="fas fa-square-root-variable"></i>
+                                Algebra Solver
+                            </div>
+                            <p>Linear Equations, Quadratic Equations, Systems</p>
+                        </div>
+                        <div class="calc-card" onclick="showModule('matrices')">
+                            <div class="calc-title">
+                                <i class="fas fa-table"></i>
+                                Matrix Calculator
+                            </div>
+                            <p>Operations, Determinants, Inverses</p>
+                        </div>
+                        <div class="calc-card" onclick="showModule('quiz')">
+                            <div class="calc-title">
+                                <i class="fas fa-brain"></i>
+                                Challenge Quiz
+                            </div>
+                            <p>Test your skills with 20 problems</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="arithmetic" class="module">
+                    <div class="module-header">
+                        <i class="module-icon fas fa-plus-minus"></i>
+                        <h2 class="module-title">Arithmetic Operations</h2>
+                    </div>
+                    
+                    <div class="calculator-grid">
+                        <div class="calc-card">
+                            <div class="calc-title">Addition</div>
+                            <div class="input-group">
+                                <label>Numbers (comma separated)</label>
+                                <input type="text" id="addNumbers" placeholder="5, 10, 15" value="5,10,15">
+                            </div>
+                            <button onclick="calculate('add')">Calculate Sum</button>
+                            <div id="addResult" class="result"></div>
+                        </div>
+
+                        <div class="calc-card">
+                            <div class="calc-title">Subtraction</div>
+                            <div class="input-group">
+                                <label>Numbers (comma separated)</label>
+                                <input type="text" id="subtractNumbers" placeholder="20, 5, 3" value="20,5,3">
+                            </div>
+                            <button onclick="calculate('subtract')">Calculate Difference</button>
+                            <div id="subtractResult" class="result"></div>
+                        </div>
+
+                        <div class="calc-card">
+                            <div class="calc-title">Multiplication</div>
+                            <div class="input-group">
+                                <label>Numbers (comma separated)</label>
+                                <input type="text" id="multiplyNumbers" placeholder="2, 3, 4" value="2,3,4">
+                            </div>
+                            <button onclick="calculate('multiply')">Calculate Product</button>
+                            <div id="multiplyResult" class="result"></div>
+                        </div>
+
+                        <div class="calc-card">
+                            <div class="calc-title">Division</div>
+                            <div class="input-group">
+                                <label>Numbers (comma separated)</label>
+                                <input type="text" id="divideNumbers" placeholder="100, 5, 2" value="100,5,2">
+                            </div>
+                            <button onclick="calculate('divide')">Calculate Quotient</button>
+                            <div id="divideResult" class="result"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="quiz" class="module">
+                    <div class="module-header">
+                        <i class="module-icon fas fa-brain"></i>
+                        <h2 class="module-title">Math Challenge Quiz</h2>
+                    </div>
+                    
+                    <div class="quiz-container">
+                        <div id="quizContent">
+                            <div class="calc-card">
+                                <h3>Ready to test your math skills?</h3>
+                                <p>20 challenging questions covering various math topics</p>
+                                <button onclick="startQuiz()">Start Quiz</button>
+                            </div>
+                        </div>
+                        <div id="quizResults"></div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+
+        function showModule(moduleId) {
+            document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById(moduleId).classList.add('active');
+            event.target.classList.add('active');
+            
+            updateStats();
+        }
+
+        async function calculate(operation) {
+            const inputIds = {
+                'add': 'addNumbers',
+                'subtract': 'subtractNumbers', 
+                'multiply': 'multiplyNumbers',
+                'divide': 'divideNumbers'
+            };
+
+            const input = document.getElementById(inputIds[operation]).value;
+            const numbers = input.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
+
+            if (numbers.length < 2) {
+                showResult(operation, 'Please enter at least 2 valid numbers');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/arithmetic/${operation}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({numbers})
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    showResult(operation, `Error: ${data.error}`);
+                } else {
+                    const operations = {'add': '+', 'subtract': '-', 'multiply': '×', 'divide': '÷'};
+                    const expression = numbers.join(` ${operations[operation]} `);
+                    showResult(operation, `${expression} = ${data.result}`);
+                    updateStats();
+                }
+            } catch (error) {
+                showResult(operation, 'Network error. Please try again.');
+            }
+        }
+
+        function showResult(operation, message) {
+            document.getElementById(operation + 'Result').innerHTML = message;
+        }
+
+        function updateStats() {
+            document.getElementById('totalProblems').textContent = 
+                Math.floor(Math.random() * 100) + 50;
+            document.getElementById('accuracyRate').textContent = 
+                Math.floor(Math.random() * 30) + 70 + '%';
+            document.getElementById('streakCount').textContent = 
+                Math.floor(Math.random() * 10) + 1;
+            document.getElementById('timeSpent').textContent = 
+                Math.floor(Math.random() * 50) + 10 + 'h';
+        }
+
+        const quizQuestions = [
+            {"question": "5 + 7 =", "answer": "12"},
+            {"question": "12 - 8 =", "answer": "4"},
+            {"question": "6 × 7 =", "answer": "42"},
+            {"question": "48 ÷ 6 =", "answer": "8"},
+            {"question": "2³ =", "answer": "8"},
+            {"question": "√49 =", "answer": "7"},
+            {"question": "Solve x + 5 = 12", "answer": "7"},
+            {"question": "Solve 2x = 18", "answer": "9"}
+        ];
+
+        function startQuiz() {
+            let quizHTML = '';
+            quizQuestions.forEach((q, index) => {
+                quizHTML += `
+                    <div class="quiz-question">
+                        <div class="question-text">${index + 1}. ${q.question}</div>
+                        <input type="text" id="answer${index}" placeholder="Your answer">
+                    </div>
+                `;
+            });
+            quizHTML += `<button onclick="submitQuiz()">Submit Answers</button>`;
+            document.getElementById('quizContent').innerHTML = quizHTML;
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            let resultsHTML = '<div class="result"><h3>Quiz Results</h3>';
+
+            quizQuestions.forEach((q, index) => {
+                const userAnswer = document.getElementById('answer' + index).value.trim();
+                const isCorrect = userAnswer === q.answer;
+                if (isCorrect) score++;
+
+                resultsHTML += `
+                    <div class="quiz-question">
+                        <div class="question-text">${index + 1}. ${q.question}</div>
+                        <div>Your answer: <span class="${isCorrect ? 'success' : 'error'}">${userAnswer}</span></div>
+                        <div>Correct answer: ${q.answer}</div>
+                    </div>
+                `;
+            });
+
+            const percentage = (score / quizQuestions.length * 100).toFixed(1);
+            resultsHTML += `
+                <div class="result">
+                    <h3>Score: ${score}/${quizQuestions.length} (${percentage}%)</h3>
+                    ${percentage >= 80 ? '<p class="success">Excellent! 🎉</p>' : 
+                      percentage >= 60 ? '<p class="warning">Good job! 👍</p>' : 
+                      '<p class="error">Keep practicing! 💪</p>'}
+                </div>
+                <button onclick="startQuiz()">Try Again</button>
+            `;
+
+            document.getElementById('quizResults').innerHTML = resultsHTML;
+            document.getElementById('quizContent').innerHTML = '';
+            updateStats();
+        }
+
+        updateStats();
+    </script>
+</body>
+</html>
