@@ -6,6 +6,7 @@
     <title>Math++ | Learning Platform</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* YOUR EXISTING CSS STAYS EXACTLY THE SAME */
         :root {
             --primary: #6366f1;
             --secondary: #8b5cf6;
@@ -534,7 +535,7 @@
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:5000/api';
+        // REMOVED: const API_BASE = 'http://localhost:5000/api';
 
         function showModule(moduleId) {
             document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
@@ -546,7 +547,7 @@
             updateStats();
         }
 
-        async function calculate(operation) {
+        function calculate(operation) {
             const inputIds = {
                 'add': 'addNumbers',
                 'subtract': 'subtractNumbers', 
@@ -562,25 +563,29 @@
                 return;
             }
 
+            // DIRECT JAVASCRIPT CALCULATIONS - NO BACKEND NEEDED
+            let result;
+            const operations = {'add': '+', 'subtract': '-', 'multiply': '×', 'divide': '÷'};
+            const expression = numbers.join(` ${operations[operation]} `);
+            
             try {
-                const response = await fetch(`${API_BASE}/arithmetic/${operation}`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({numbers})
-                });
-
-                const data = await response.json();
-                
-                if (data.error) {
-                    showResult(operation, `Error: ${data.error}`);
-                } else {
-                    const operations = {'add': '+', 'subtract': '-', 'multiply': '×', 'divide': '÷'};
-                    const expression = numbers.join(` ${operations[operation]} `);
-                    showResult(operation, `${expression} = ${data.result}`);
-                    updateStats();
+                if (operation === 'add') {
+                    result = numbers.reduce((a, b) => a + b);
+                } else if (operation === 'subtract') {
+                    result = numbers.reduce((a, b) => a - b);
+                } else if (operation === 'multiply') {
+                    result = numbers.reduce((a, b) => a * b, 1);
+                } else if (operation === 'divide') {
+                    if (numbers.slice(1).some(n => n === 0)) {
+                        throw new Error('Division by zero');
+                    }
+                    result = numbers.reduce((a, b) => a / b);
                 }
+                
+                showResult(operation, `<span class="success">${expression} = ${result}</span>`);
+                updateStats();
             } catch (error) {
-                showResult(operation, 'Network error. Please try again.');
+                showResult(operation, `<span class="error">Error: ${error.message}</span>`);
             }
         }
 
