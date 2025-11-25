@@ -750,7 +750,6 @@
     </div>
 
     <script>
-        // Module Navigation
         function showModule(moduleId) {
             document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -761,7 +760,6 @@
             updateStats();
         }
 
-        // Arithmetic Functions
         function calculate(operation) {
             const inputIds = {
                 'add': 'addNumbers',
@@ -807,7 +805,6 @@
             document.getElementById(operation + 'Result').innerHTML = message;
         }
 
-        // Algebra Functions
         function solveLinear() {
             const a = parseFloat(document.getElementById('linearA').value);
             const b = parseFloat(document.getElementById('linearB').value);
@@ -869,7 +866,6 @@
             document.getElementById('systemResult').innerHTML = `<span class="success">Solution: x = ${x.toFixed(2)}, y = ${y.toFixed(2)}</span>`;
         }
 
-        // Matrix Functions
         function matrixOperation(operation) {
             try {
                 let result;
@@ -930,7 +926,6 @@
             }
         }
 
-        // Graph Functions
         function plotLinear() {
             const m = parseFloat(document.getElementById('linearM').value);
             const b = parseFloat(document.getElementById('linearB').value);
@@ -1014,7 +1009,6 @@
             });
         }
 
-        // Quiz Functions
         const quizQuestions = [
             {"question": "5 + 7 =", "answer": "12"},
             {"question": "12 - 8 =", "answer": "4"},
@@ -1074,7 +1068,6 @@
             updateStats();
         }
 
-        // Progress Functions
         function updateStats() {
             document.getElementById('totalProblems').textContent = 
                 Math.floor(Math.random() * 100) + 50;
@@ -1085,8 +1078,6 @@
             document.getElementById('timeSpent').textContent = 
                 Math.floor(Math.random() * 50) + 10 + 'h';
         }
-
-        // Initialize
         updateStats();
     </script>
 </body>
