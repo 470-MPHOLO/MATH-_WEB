@@ -1696,42 +1696,45 @@
         }
 
         // FIXED: Exercise Functions
-        function checkAnswer(element, correctAnswer) {
-            const options = element.parentElement.querySelectorAll('.exercise-option');
-            let answered = false;
-            
-            options.forEach(opt => {
-                opt.classList.remove('selected', 'correct', 'incorrect');
-                if (opt === element) {
-                    opt.classList.add('selected');
-                    answered = true;
-                }
-            });
-            
-            if (!answered) return;
-            
-            // Find and highlight all correct/incorrect answers
-            options.forEach(opt => {
-                if (opt.textContent.trim() === correctAnswer) {
-                    opt.classList.add('correct');
-                } else if (opt === element && opt.textContent.trim() !== correctAnswer) {
-                    opt.classList.add('incorrect');
-                }
-            });
-            
-            // Check if selected answer is correct
-            const isCorrect = element.textContent.trim() === correctAnswer;
-            
-            // Show feedback after a short delay
-            setTimeout(() => {
-                if (isCorrect) {
-                    alert('✅ Correct! Well done!');
-                    trackProgress('exercises');
-                } else {
-                    alert('❌ Incorrect. The right answer was highlighted.');
-                }
-            }, 100);
+        
+function checkAnswer(element, correctAnswer) {
+    const options = element.parentElement.querySelectorAll('.exercise-option');
+    
+    // Remove all previous states
+    options.forEach(opt => {
+        opt.classList.remove('selected', 'correct', 'incorrect');
+    });
+    
+    // Mark selected option
+    element.classList.add('selected');
+    
+    // Mark correct answer
+    options.forEach(opt => {
+        if (opt.textContent.trim() === correctAnswer) {
+            opt.classList.add('correct');
         }
+    });
+    
+    // Mark incorrect if wrong
+    if (element.textContent.trim() !== correctAnswer) {
+        element.classList.add('incorrect');
+    }
+    
+    // Disable further clicks
+    options.forEach(opt => {
+        opt.onclick = null;
+    });
+    
+    // Show feedback
+    setTimeout(() => {
+        if (element.textContent.trim() === correctAnswer) {
+            alert('✅ Correct! Well done!');
+            trackProgress('exercises');
+        } else {
+            alert('❌ Incorrect. The right answer was highlighted.');
+        }
+    }, 300);
+}
 
         function generateNewExercises() {
             // In a full implementation, this would generate new random exercises
