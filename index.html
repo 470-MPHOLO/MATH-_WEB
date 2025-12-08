@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math++ | Interactive Learning Platform</title>
+    <title>Math++ | Number Systems & Arithmetic Mastery</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #6366f1;
@@ -16,6 +15,10 @@
             --success: #10b981;
             --warning: #f59e0b;
             --error: #ef4444;
+            --binary: #3b82f6;
+            --octal: #8b5cf6;
+            --hex: #10b981;
+            --decimal: #f59e0b;
         }
 
         * {
@@ -35,7 +38,7 @@
         .app-container {
             max-width: 1400px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px);
             border-radius: 20px;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
@@ -104,11 +107,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
-        .welcome-banner h2 {
-            margin-bottom: 0.5rem;
-            font-size: 1.5rem;
-        }
-
         .main-layout {
             display: grid;
             grid-template-columns: 280px 1fr;
@@ -119,7 +117,6 @@
             background: var(--light);
             padding: 2rem 1rem;
             border-right: 1px solid #e2e8f0;
-            position: relative;
         }
 
         .nav-item {
@@ -245,7 +242,7 @@
             color: var(--dark);
         }
 
-        input, select, button {
+        input, select, button, textarea {
             width: 100%;
             padding: 1rem;
             border: 2px solid #e2e8f0;
@@ -254,7 +251,7 @@
             transition: all 0.3s ease;
         }
 
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
@@ -285,17 +282,145 @@
             font-size: 1.1rem;
         }
 
+        /* Number System Specific */
+        .number-system-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .system-card {
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .system-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .binary { background: linear-gradient(135deg, var(--binary), #2563eb); }
+        .octal { background: linear-gradient(135deg, var(--octal), #7c3aed); }
+        .hex { background: linear-gradient(135deg, var(--hex), #059669); }
+        .decimal { background: linear-gradient(135deg, var(--decimal), #d97706); }
+
+        .system-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Exercise Section */
+        .exercise-container {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .exercise-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .difficulty-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .difficulty-beginner { background: var(--success); color: white; }
+        .difficulty-intermediate { background: var(--warning); color: white; }
+        .difficulty-advanced { background: var(--error); color: white; }
+
+        .exercise-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .exercise-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .exercise-option {
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .exercise-option:hover {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+
+        .exercise-option.selected {
+            border-color: var(--success);
+            background: #d1fae5;
+        }
+
+        .exercise-option.correct {
+            border-color: var(--success);
+            background: #d1fae5;
+        }
+
+        .exercise-option.incorrect {
+            border-color: var(--error);
+            background: #fee2e2;
+        }
+
+        /* Quiz Styles */
         .quiz-container {
             max-width: 800px;
             margin: 0 auto;
         }
 
-        .quiz-question {
-            background: var(--light);
-            padding: 2rem;
+        .quiz-progress {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
             margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .quiz-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .quiz-question {
+            background: white;
+            padding: 2rem;
             border-radius: 16px;
             border: 2px solid #e2e8f0;
+            margin: 1.5rem 0;
         }
 
         .question-text {
@@ -305,28 +430,7 @@
             color: var(--dark);
         }
 
-        .matrix-input {
-            display: grid;
-            gap: 0.5rem;
-            margin: 1rem 0;
-        }
-
-        .matrix-row {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-        }
-
-        .matrix-input input {
-            width: 80px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .success { color: var(--success); }
-        .error { color: var(--error); }
-        .warning { color: var(--warning); }
-
+        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -355,17 +459,7 @@
             font-weight: 500;
         }
 
-        .chart-container {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            margin: 1rem 0;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            position: relative;
-            min-height: 300px;
-        }
-
-        /* Learning Guide Styles */
+        /* Learning Guide */
         .learning-guide {
             background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
             border-radius: 15px;
@@ -423,15 +517,7 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Enhanced styles */
-        .step-by-step {
-            background: #f8f9fa;
-            border-left: 4px solid var(--primary);
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 0 8px 8px 0;
-        }
-        
+        /* Hint and Step-by-Step */
         .hint {
             background: #fff3cd;
             border: 1px solid #ffeaa7;
@@ -439,81 +525,20 @@
             border-radius: 8px;
             margin: 0.5rem 0;
             cursor: pointer;
-        }
-        
-        .validation-error {
-            color: var(--error);
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-            display: none;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .history-item {
-            padding: 0.5rem;
-            border-bottom: 1px solid #e2e8f0;
-            cursor: pointer;
-        }
-        
-        .history-item:hover {
-            background: #f1f5f9;
-        }
-
-        .achievement-badge {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            background: linear-gradient(135deg, var(--success), #059669);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            margin: 0.25rem;
-            font-size: 0.875rem;
-            font-weight: 600;
+            gap: 0.5rem;
         }
 
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            cursor: help;
+        .step-by-step {
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
         }
 
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 200px;
-            background-color: var(--dark);
-            color: white;
-            text-align: center;
-            border-radius: 6px;
-            padding: 0.5rem;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.875rem;
-            font-weight: normal;
-        }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-
+        /* Responsive */
         @media (max-width: 1024px) {
             .main-layout {
                 grid-template-columns: 1fr;
@@ -531,13 +556,41 @@
             h1 {
                 font-size: 2rem;
             }
-            .calculator-grid {
+            .calculator-grid, .number-system-grid {
                 grid-template-columns: 1fr;
             }
             .welcome-banner {
                 margin: 1rem;
                 padding: 1rem;
             }
+        }
+
+        /* Badges */
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -548,12 +601,12 @@
                 <i class="fas fa-calculator"></i>
             </div>
             <h1>Math++</h1>
-            <p class="tagline">Master Mathematics with Interactive Learning</p>
+            <p class="tagline">Master Number Systems & Intensive Arithmetic</p>
         </header>
 
         <div class="welcome-banner">
-            <h2>🎯 Welcome to Your Math Learning Journey!</h2>
-            <p>Start with basic arithmetic and progress to advanced algebra. Use the learning guides in each section!</p>
+            <h2>🎯 Welcome to Number Systems Mastery!</h2>
+            <p>Master Binary, Octal, Hexadecimal conversions and intensive arithmetic operations</p>
         </div>
 
         <div class="main-layout">
@@ -566,25 +619,25 @@
                     <i class="nav-icon fas fa-graduation-cap"></i>
                     Learning Guide
                 </div>
+                <div class="nav-item" onclick="showModule('number-systems')">
+                    <i class="nav-icon fas fa-sitemap"></i>
+                    Number Systems
+                </div>
+                <div class="nav-item" onclick="showModule('conversions')">
+                    <i class="nav-icon fas fa-exchange-alt"></i>
+                    System Conversions
+                </div>
                 <div class="nav-item" onclick="showModule('arithmetic')">
-                    <i class="nav-icon fas fa-plus-minus"></i>
-                    Arithmetic
+                    <i class="nav-icon fas fa-calculator"></i>
+                    Intensive Arithmetic
                 </div>
-                <div class="nav-item" onclick="showModule('algebra')">
-                    <i class="nav-icon fas fa-square-root-variable"></i>
-                    Algebra
-                </div>
-                <div class="nav-item" onclick="showModule('matrices')">
-                    <i class="nav-icon fas fa-table"></i>
-                    Matrices
+                <div class="nav-item" onclick="showModule('exercises')">
+                    <i class="nav-icon fas fa-dumbbell"></i>
+                    Exercises
                 </div>
                 <div class="nav-item" onclick="showModule('quiz')">
                     <i class="nav-icon fas fa-brain"></i>
-                    Math Quiz
-                </div>
-                <div class="nav-item" onclick="showModule('graphs')">
-                    <i class="nav-icon fas fa-chart-line"></i>
-                    Graphs
+                    Mastery Quiz
                 </div>
                 <div class="nav-item" onclick="showModule('progress')">
                     <i class="nav-icon fas fa-trophy"></i>
@@ -603,25 +656,24 @@
                     <div class="learning-guide">
                         <div class="guide-header">
                             <i class="guide-icon fas fa-rocket"></i>
-                            <h3 class="guide-title">Getting Started</h3>
+                            <h3 class="guide-title">Number Systems Learning Path</h3>
                         </div>
                         <div class="guide-content">
-                            <p>Welcome to Math++! Follow these steps to master mathematics:</p>
                             <div class="guide-step">
-                                <h4>📚 Step 1: Learn the Basics</h4>
-                                <p>Start with the Learning Guide to understand fundamental concepts</p>
+                                <h4>🔢 Step 1: Understand Number Systems</h4>
+                                <p>Learn about Decimal, Binary, Octal, and Hexadecimal systems</p>
                             </div>
                             <div class="guide-step">
-                                <h4>🧮 Step 2: Practice Arithmetic</h4>
-                                <p>Master addition, subtraction, multiplication, and division</p>
+                                <h4>🔄 Step 2: Master Conversions</h4>
+                                <p>Convert between different number systems effortlessly</p>
                             </div>
                             <div class="guide-step">
-                                <h4>📈 Step 3: Explore Algebra</h4>
-                                <p>Solve equations and understand variables</p>
+                                <h4>🧮 Step 3: Intensive Arithmetic</h4>
+                                <p>Perform arithmetic operations in different number systems</p>
                             </div>
                             <div class="guide-step">
-                                <h4>🎯 Step 4: Test Your Skills</h4>
-                                <p>Take quizzes to reinforce your learning</p>
+                                <h4>🎯 Step 4: Practice & Quiz</h4>
+                                <p>Test your skills with exercises and mastery quizzes</p>
                             </div>
                         </div>
                     </div>
@@ -636,46 +688,36 @@
                             <div class="stat-label">Accuracy Rate</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number" id="streakCount">0</div>
-                            <div class="stat-label">Day Streak</div>
+                            <div class="stat-number" id="conversionMastery">0</div>
+                            <div class="stat-label">Conversions Mastered</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number" id="timeSpent">0h</div>
-                            <div class="stat-label">Time Learning</div>
+                            <div class="stat-number" id="quizScore">0%</div>
+                            <div class="stat-label">Quiz Score</div>
                         </div>
                     </div>
 
-                    <div class="calculator-grid">
-                        <div class="calc-card" onclick="showModule('learn')">
-                            <div class="calc-title">
-                                <i class="fas fa-graduation-cap"></i>
-                                Learning Guide
-                            </div>
-                            <p>Start your math journey with comprehensive guides</p>
-                            <div class="result" style="background: linear-gradient(135deg, #dbeafe, #e0e7ff);">
-                                <strong>Recommended for Beginners</strong>
-                            </div>
+                    <h3>Quick Access Number Systems</h3>
+                    <div class="number-system-grid">
+                        <div class="system-card decimal" onclick="showModule('number-systems')">
+                            <i class="system-icon fas fa-1"></i>
+                            <div>Decimal</div>
+                            <small>Base-10 System</small>
                         </div>
-                        <div class="calc-card" onclick="showModule('arithmetic')">
-                            <div class="calc-title">
-                                <i class="fas fa-plus-minus"></i>
-                                Arithmetic Master
-                            </div>
-                            <p>Addition, Subtraction, Multiplication, Division</p>
+                        <div class="system-card binary" onclick="showModule('conversions')">
+                            <i class="system-icon fas fa-0"></i>
+                            <div>Binary</div>
+                            <small>Base-2 System</small>
                         </div>
-                        <div class="calc-card" onclick="showModule('algebra')">
-                            <div class="calc-title">
-                                <i class="fas fa-square-root-variable"></i>
-                                Algebra Solver
-                            </div>
-                            <p>Linear Equations, Quadratic Equations, Systems</p>
+                        <div class="system-card octal" onclick="showModule('conversions')">
+                            <i class="system-icon fas fa-8"></i>
+                            <div>Octal</div>
+                            <small>Base-8 System</small>
                         </div>
-                        <div class="calc-card" onclick="showModule('quiz')">
-                            <div class="calc-title">
-                                <i class="fas fa-brain"></i>
-                                Challenge Quiz
-                            </div>
-                            <p>Test your skills with interactive quizzes</p>
+                        <div class="system-card hex" onclick="showModule('conversions')">
+                            <i class="system-icon fas fa-f"></i>
+                            <div>Hexadecimal</div>
+                            <small>Base-16 System</small>
                         </div>
                     </div>
                 </div>
@@ -684,542 +726,527 @@
                 <div id="learn" class="module">
                     <div class="module-header">
                         <i class="module-icon fas fa-graduation-cap"></i>
-                        <h2 class="module-title">Math Learning Guide</h2>
+                        <h2 class="module-title">Number Systems Learning Guide</h2>
                     </div>
 
                     <div class="learning-guide">
                         <div class="guide-header">
                             <i class="guide-icon fas fa-book"></i>
-                            <h3 class="guide-title">Mathematics Fundamentals</h3>
+                            <h3 class="guide-title">Comprehensive Number Systems Guide</h3>
                         </div>
-                        <div class="guide-content">
-                            <p>Mathematics is the language of patterns and relationships. Follow this guide to build your skills step by step.</p>
-                            
-                            <div class="guide-step">
-                                <h4>🔢 Arithmetic Basics</h4>
-                                <p><strong>What is Arithmetic?</strong> The branch of mathematics dealing with numbers and basic operations.</p>
-                                <div class="example-box">
-                                    <div class="example-title">Key Operations:</div>
-                                    <ul>
-                                        <li><strong>Addition (+)</strong>: Combining numbers (5 + 3 = 8)</li>
-                                        <li><strong>Subtraction (-)</strong>: Taking away numbers (8 - 3 = 5)</li>
-                                        <li><strong>Multiplication (×)</strong>: Repeated addition (4 × 3 = 12)</li>
-                                        <li><strong>Division (÷)</strong>: Sharing equally (12 ÷ 3 = 4)</li>
-                                    </ul>
-                                </div>
+                        
+                        <div class="guide-step">
+                            <h4>🔢 Decimal System (Base-10)</h4>
+                            <p>The number system we use daily. Uses digits 0-9.</p>
+                            <div class="example-box">
+                                <div class="example-title">Example: 345</div>
+                                <p>3 × 10² + 4 × 10¹ + 5 × 10⁰ = 300 + 40 + 5 = 345</p>
                             </div>
+                        </div>
 
-                            <div class="guide-step">
-                                <h4>📊 Introduction to Algebra</h4>
-                                <p><strong>What is Algebra?</strong> Using letters and symbols to represent numbers and relationships.</p>
-                                <div class="example-box">
-                                    <div class="example-title">Basic Concepts:</div>
-                                    <ul>
-                                        <li><strong>Variables</strong>: Letters that represent unknown numbers (x, y)</li>
-                                        <li><strong>Equations</strong>: Mathematical statements with equals sign (2x + 3 = 7)</li>
-                                        <li><strong>Solving</strong>: Finding the value of variables</li>
-                                    </ul>
-                                </div>
+                        <div class="guide-step">
+                            <h4>💻 Binary System (Base-2)</h4>
+                            <p>Used in computers. Uses digits 0 and 1.</p>
+                            <div class="example-box">
+                                <div class="example-title">Example: 1011</div>
+                                <p>1 × 2³ + 0 × 2² + 1 × 2¹ + 1 × 2⁰ = 8 + 0 + 2 + 1 = 11 (decimal)</p>
                             </div>
+                        </div>
 
-                            <div class="guide-step">
-                                <h4>🧩 Matrix Mathematics</h4>
-                                <p><strong>What are Matrices?</strong> Rectangular arrays of numbers arranged in rows and columns.</p>
-                                <div class="example-box">
-                                    <div class="example-title">Matrix Operations:</div>
-                                    <ul>
-                                        <li><strong>Addition</strong>: Add corresponding elements</li>
-                                        <li><strong>Multiplication</strong>: Dot product of rows and columns</li>
-                                        <li><strong>Determinant</strong>: Special number for square matrices</li>
-                                    </ul>
-                                </div>
+                        <div class="guide-step">
+                            <h4>🎯 Octal System (Base-8)</h4>
+                            <p>Used in some computer applications. Uses digits 0-7.</p>
+                            <div class="example-box">
+                                <div class="example-title">Example: 753</div>
+                                <p>7 × 8² + 5 × 8¹ + 3 × 8⁰ = 448 + 40 + 3 = 491 (decimal)</p>
                             </div>
+                        </div>
 
-                            <div class="guide-step">
-                                <h4>📈 Understanding Graphs</h4>
-                                <p><strong>What are Graphs?</strong> Visual representations of mathematical functions and relationships.</p>
-                                <div class="example-box">
-                                    <div class="example-title">Common Graph Types:</div>
-                                    <ul>
-                                        <li><strong>Linear Graphs</strong>: Straight lines (y = mx + b)</li>
-                                        <li><strong>Quadratic Graphs</strong>: Parabolas (y = ax² + bx + c)</li>
-                                        <li><strong>Coordinates</strong>: Points on the graph (x, y)</li>
-                                    </ul>
-                                </div>
+                        <div class="guide-step">
+                            <h4>🌈 Hexadecimal System (Base-16)</h4>
+                            <p>Widely used in programming. Uses digits 0-9 and A-F.</p>
+                            <div class="example-box">
+                                <div class="example-title">Example: 2FA</div>
+                                <p>2 × 16² + 15 × 16¹ + 10 × 16⁰ = 512 + 240 + 10 = 762 (decimal)</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="calculator-grid">
                         <div class="calc-card">
-                            <div class="calc-title">Learning Tips</div>
+                            <div class="calc-title">Conversion Methods</div>
                             <div class="result">
-                                <h4>🎯 Effective Learning Strategies:</h4>
+                                <h4>🔁 Conversion Techniques:</h4>
                                 <ul>
-                                    <li><strong>Practice Daily</strong>: 15-30 minutes of regular practice</li>
-                                    <li><strong>Start Simple</strong>: Master basics before moving to advanced topics</li>
-                                    <li><strong>Use Hints</strong>: Don't hesitate to use the hint system</li>
-                                    <li><strong>Review Mistakes</strong>: Learn from errors in the quiz section</li>
-                                    <li><strong>Track Progress</strong>: Monitor your improvement over time</li>
+                                    <li><strong>Decimal to Binary</strong>: Repeated division by 2</li>
+                                    <li><strong>Binary to Decimal</strong>: Sum of powers of 2</li>
+                                    <li><strong>Decimal to Hex</strong>: Repeated division by 16</li>
+                                    <li><strong>Binary to Hex</strong>: Group binary digits into sets of 4</li>
+                                    <li><strong>Octal to Binary</strong>: Convert each digit to 3 binary digits</li>
                                 </ul>
                             </div>
                         </div>
 
                         <div class="calc-card">
-                            <div class="calc-title">Quick Reference</div>
+                            <div class="calc-title">Arithmetic Operations</div>
                             <div class="result">
-                                <h4>📚 Math Symbols Guide:</h4>
+                                <h4>🧮 System Arithmetic Rules:</h4>
                                 <ul>
-                                    <li><strong>+</strong> Addition</li>
-                                    <li><strong>-</strong> Subtraction</li>
-                                    <li><strong>× or *</strong> Multiplication</li>
-                                    <li><strong>÷ or /</strong> Division</li>
-                                    <li><strong>=</strong> Equals</li>
-                                    <li><strong>x, y, z</strong> Variables</li>
-                                    <li><strong>√</strong> Square Root</li>
-                                    <li><strong>²</strong> Squared (Power of 2)</li>
+                                    <li><strong>Binary Addition</strong>: 0+0=0, 0+1=1, 1+1=0 carry 1</li>
+                                    <li><strong>Binary Subtraction</strong>: Uses complement method</li>
+                                    <li><strong>Hex Addition</strong>: Carry when sum ≥ 16</li>
+                                    <li><strong>Octal Multiplication</strong>: Similar to decimal but base-8</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Arithmetic -->
+                <!-- Number Systems -->
+                <div id="number-systems" class="module">
+                    <div class="module-header">
+                        <i class="module-icon fas fa-sitemap"></i>
+                        <h2 class="module-title">Number Systems Explorer</h2>
+                    </div>
+
+                    <div class="calculator-grid">
+                        <div class="calc-card">
+                            <div class="calc-title">Decimal System Explorer</div>
+                            <div class="input-group">
+                                <label>Enter Decimal Number</label>
+                                <input type="number" id="decimalInput" placeholder="255" value="255">
+                            </div>
+                            <button onclick="exploreDecimal()">Explore Decimal</button>
+                            <div id="decimalResult" class="result"></div>
+                        </div>
+
+                        <div class="calc-card">
+                            <div class="calc-title">Binary System Explorer</div>
+                            <div class="input-group">
+                                <label>Enter Binary Number</label>
+                                <input type="text" id="binaryInput" placeholder="11111111" value="11111111">
+                            </div>
+                            <button onclick="exploreBinary()">Explore Binary</button>
+                            <div id="binaryResult" class="result"></div>
+                        </div>
+
+                        <div class="calc-card">
+                            <div class="calc-title">Octal System Explorer</div>
+                            <div class="input-group">
+                                <label>Enter Octal Number</label>
+                                <input type="text" id="octalInput" placeholder="377" value="377">
+                            </div>
+                            <button onclick="exploreOctal()">Explore Octal</button>
+                            <div id="octalResult" class="result"></div>
+                        </div>
+
+                        <div class="calc-card">
+                            <div class="calc-title">Hexadecimal Explorer</div>
+                            <div class="input-group">
+                                <label>Enter Hex Number</label>
+                                <input type="text" id="hexInput" placeholder="FF" value="FF">
+                            </div>
+                            <button onclick="exploreHex()">Explore Hexadecimal</button>
+                            <div id="hexResult" class="result"></div>
+                        </div>
+                    </div>
+
+                    <div class="learning-guide">
+                        <div class="guide-header">
+                            <i class="guide-icon fas fa-lightbulb"></i>
+                            <h3 class="guide-title">Quick Facts</h3>
+                        </div>
+                        <div class="guide-content">
+                            <p><strong>Why Multiple Number Systems?</strong></p>
+                            <ul>
+                                <li><strong>Binary</strong>: Perfect for electronic circuits (on/off states)</li>
+                                <li><strong>Octal</strong>: Compact representation of binary (3 bits per digit)</li>
+                                <li><strong>Hexadecimal</strong>: Even more compact (4 bits per digit)</li>
+                                <li><strong>Decimal</strong>: Natural for human counting (10 fingers!)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Conversions -->
+                <div id="conversions" class="module">
+                    <div class="module-header">
+                        <i class="module-icon fas fa-exchange-alt"></i>
+                        <h2 class="module-title">Number System Conversions</h2>
+                    </div>
+
+                    <div class="calculator-grid">
+                        <div class="calc-card">
+                            <div class="calc-title">Decimal ↔ Binary Conversion</div>
+                            <div class="input-group">
+                                <label>Decimal Number</label>
+                                <input type="number" id="decToBinInput" placeholder="255" value="255">
+                            </div>
+                            <div class="input-group">
+                                <label>Binary Number</label>
+                                <input type="text" id="binToDecInput" placeholder="11111111" value="11111111">
+                            </div>
+                            <div class="input-group">
+                                <button onclick="decToBin()">Decimal → Binary</button>
+                                <button onclick="binToDec()">Binary → Decimal</button>
+                            </div>
+                            <div id="binaryConversionResult" class="result"></div>
+                        </div>
+
+                        <div class="calc-card">
+                            <div class="calc-title">Decimal ↔ Hexadecimal</div>
+                            <div class="input-group">
+                                <label>Decimal Number</label>
+                                <input type="number" id="decToHexInput" placeholder="255" value="255">
+                            </div>
+                            <div class="input-group">
+                                <label>Hexadecimal Number</label>
+                                <input type="text" id="hexToDecInput" placeholder="FF" value="FF">
+                            </div>
+                            <div class="input-group">
+                                <button onclick="decToHex()">Decimal → Hex</button>
+                                <button onclick="hexToDec()">Hex → Decimal</button>
+                            </div>
+                            <div id="hexConversionResult" class="result"></div>
+                        </div>
+
+                        <div class="calc-card">
+                            <div class="calc-title">Binary ↔ Hexadecimal</div>
+                            <div class="input-group">
+                                <label>Binary Number</label>
+                                <input type="text" id="binToHexInput" placeholder="11111111" value="11111111">
+                            </div>
+                            <div class="input-group">
+                                <label>Hexadecimal Number</label>
+                                <input type="text" id="hexToBinInput" placeholder="FF" value="FF">
+                            </div>
+                            <div class="input-group">
+                                <button onclick="binToHex()">Binary → Hex</button>
+                                <button onclick="hexToBin()">Hex → Binary</button>
+                            </div>
+                            <div id="binHexConversionResult" class="result"></div>
+                        </div>
+
+                        <div class="calc-card">
+                            <div class="calc-title">Universal Converter</div>
+                            <div class="input-group">
+                                <label>Input Number</label>
+                                <input type="text" id="universalInput" placeholder="255" value="255">
+                            </div>
+                            <div class="input-group">
+                                <label>From System</label>
+                                <select id="fromSystem">
+                                    <option value="decimal">Decimal</option>
+                                    <option value="binary">Binary</option>
+                                    <option value="octal">Octal</option>
+                                    <option value="hex">Hexadecimal</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>To System</label>
+                                <select id="toSystem">
+                                    <option value="decimal">Decimal</option>
+                                    <option value="binary">Binary</option>
+                                    <option value="octal">Octal</option>
+                                    <option value="hex">Hexadecimal</option>
+                                </select>
+                            </div>
+                            <button onclick="universalConvert()">Convert</button>
+                            <div id="universalResult" class="result"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Intensive Arithmetic -->
                 <div id="arithmetic" class="module">
                     <div class="module-header">
-                        <i class="module-icon fas fa-plus-minus"></i>
-                        <h2 class="module-title">Arithmetic Operations</h2>
+                        <i class="module-icon fas fa-calculator"></i>
+                        <h2 class="module-title">Intensive Arithmetic Operations</h2>
                     </div>
 
-                    <div class="learning-guide">
-                        <div class="guide-header">
-                            <i class="guide-icon fas fa-calculator"></i>
-                            <h3 class="guide-title">Arithmetic Learning Guide</h3>
-                        </div>
-                        <div class="guide-content">
-                            <p>Arithmetic is the foundation of all mathematics. Master these basic operations to build your math skills.</p>
-                            
-                            <div class="guide-step">
-                                <h4>➕ Addition</h4>
-                                <p>Combining two or more numbers to find their total.</p>
-                                <div class="example-box">
-                                    <div class="example-title">Example: 7 + 5 = 12</div>
-                                    <p><strong>How to think:</strong> If you have 7 apples and get 5 more, you now have 12 apples.</p>
-                                </div>
-                            </div>
-
-                            <div class="guide-step">
-                                <h4>➖ Subtraction</h4>
-                                <p>Finding the difference between numbers or taking away.</p>
-                                <div class="example-box">
-                                    <div class="example-title">Example: 15 - 8 = 7</div>
-                                    <p><strong>How to think:</strong> If you have 15 candies and eat 8, you have 7 left.</p>
-                                </div>
-                            </div>
-
-                            <div class="guide-step">
-                                <h4>✖️ Multiplication</h4>
-                                <p>Repeated addition of the same number.</p>
-                                <div class="example-box">
-                                    <div class="example-title">Example: 4 × 6 = 24</div>
-                                    <p><strong>How to think:</strong> 4 groups of 6 apples each gives you 24 apples total.</p>
-                                </div>
-                            </div>
-
-                            <div class="guide-step">
-                                <h4>➗ Division</h4>
-                                <p>Sharing or grouping numbers equally.</p>
-                                <div class="example-box">
-                                    <div class="example-title">Example: 20 ÷ 5 = 4</div>
-                                    <p><strong>How to think:</strong> 20 cookies shared equally among 5 friends gives each person 4 cookies.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <div class="calculator-grid">
                         <div class="calc-card">
-                            <div class="calc-title">Addition</div>
+                            <div class="calc-title">Binary Arithmetic</div>
                             <div class="input-group">
-                                <label>Numbers (comma separated)</label>
-                                <input type="text" id="addNumbers" placeholder="5, 10, 15" value="5,10,15">
-                                <div class="validation-error" id="addError"></div>
+                                <label>First Binary Number</label>
+                                <input type="text" id="binaryNum1" placeholder="1011" value="1011">
                             </div>
-                            <button onclick="calculate('add')">Calculate Sum</button>
-                            <div class="hint" onclick="toggleHint('addHint')">
-                                <i class="fas fa-lightbulb"></i> Need help?
+                            <div class="input-group">
+                                <label>Second Binary Number</label>
+                                <input type="text" id="binaryNum2" placeholder="1101" value="1101">
                             </div>
-                            <div class="step-by-step" id="addHint" style="display: none;">
-                                <p>To add numbers:</p>
-                                <ol>
-                                    <li>Separate numbers with commas</li>
-                                    <li>The calculator will sum all numbers together</li>
-                                    <li>Example: 5, 10, 15 = 5 + 10 + 15 = 30</li>
-                                </ol>
+                            <div class="input-group">
+                                <select id="binaryOperation">
+                                    <option value="add">Addition</option>
+                                    <option value="subtract">Subtraction</option>
+                                    <option value="multiply">Multiplication</option>
+                                </select>
                             </div>
-                            <div id="addResult" class="result"></div>
+                            <button onclick="binaryArithmetic()">Calculate</button>
+                            <div id="binaryArithmeticResult" class="result"></div>
                         </div>
 
                         <div class="calc-card">
-                            <div class="calc-title">Subtraction</div>
+                            <div class="calc-title">Hexadecimal Arithmetic</div>
                             <div class="input-group">
-                                <label>Numbers (comma separated)</label>
-                                <input type="text" id="subtractNumbers" placeholder="20, 5, 3" value="20,5,3">
-                                <div class="validation-error" id="subtractError"></div>
+                                <label>First Hex Number</label>
+                                <input type="text" id="hexNum1" placeholder="A5" value="A5">
                             </div>
-                            <button onclick="calculate('subtract')">Calculate Difference</button>
-                            <div class="hint" onclick="toggleHint('subtractHint')">
-                                <i class="fas fa-lightbulb"></i> Need help?
+                            <div class="input-group">
+                                <label>Second Hex Number</label>
+                                <input type="text" id="hexNum2" placeholder="2F" value="2F">
                             </div>
-                            <div class="step-by-step" id="subtractHint" style="display: none;">
-                                <p>To subtract numbers:</p>
-                                <ol>
-                                    <li>The first number is the starting value</li>
-                                    <li>All subsequent numbers are subtracted from it</li>
-                                    <li>Example: 20, 5, 3 = 20 - 5 - 3 = 12</li>
-                                </ol>
+                            <div class="input-group">
+                                <select id="hexOperation">
+                                    <option value="add">Addition</option>
+                                    <option value="subtract">Subtraction</option>
+                                </select>
                             </div>
-                            <div id="subtractResult" class="result"></div>
+                            <button onclick="hexArithmetic()">Calculate</button>
+                            <div id="hexArithmeticResult" class="result"></div>
                         </div>
 
                         <div class="calc-card">
-                            <div class="calc-title">Multiplication</div>
+                            <div class="calc-title">Octal Arithmetic</div>
                             <div class="input-group">
-                                <label>Numbers (comma separated)</label>
-                                <input type="text" id="multiplyNumbers" placeholder="2, 3, 4" value="2,3,4">
-                                <div class="validation-error" id="multiplyError"></div>
+                                <label>First Octal Number</label>
+                                <input type="text" id="octalNum1" placeholder="75" value="75">
                             </div>
-                            <button onclick="calculate('multiply')">Calculate Product</button>
-                            <div class="hint" onclick="toggleHint('multiplyHint')">
-                                <i class="fas fa-lightbulb"></i> Need help?
+                            <div class="input-group">
+                                <label>Second Octal Number</label>
+                                <input type="text" id="octalNum2" placeholder="23" value="23">
                             </div>
-                            <div class="step-by-step" id="multiplyHint" style="display: none;">
-                                <p>To multiply numbers:</p>
-                                <ol>
-                                    <li>All numbers are multiplied together</li>
-                                    <li>Example: 2, 3, 4 = 2 × 3 × 4 = 24</li>
-                                </ol>
+                            <div class="input-group">
+                                <select id="octalOperation">
+                                    <option value="add">Addition</option>
+                                    <option value="subtract">Subtraction</option>
+                                </select>
                             </div>
-                            <div id="multiplyResult" class="result"></div>
+                            <button onclick="octalArithmetic()">Calculate</button>
+                            <div id="octalArithmeticResult" class="result"></div>
                         </div>
 
                         <div class="calc-card">
-                            <div class="calc-title">Division</div>
+                            <div class="calc-title">Mixed System Calculator</div>
                             <div class="input-group">
-                                <label>Numbers (comma separated)</label>
-                                <input type="text" id="divideNumbers" placeholder="100, 5, 2" value="100,5,2">
-                                <div class="validation-error" id="divideError"></div>
+                                <label>First Number</label>
+                                <input type="text" id="mixedNum1" placeholder="1011" value="1011">
+                                <select id="mixedSystem1">
+                                    <option value="binary">Binary</option>
+                                    <option value="decimal">Decimal</option>
+                                    <option value="octal">Octal</option>
+                                    <option value="hex">Hexadecimal</option>
+                                </select>
                             </div>
-                            <button onclick="calculate('divide')">Calculate Quotient</button>
-                            <div class="hint" onclick="toggleHint('divideHint')">
-                                <i class="fas fa-lightbulb"></i> Need help?
+                            <div class="input-group">
+                                <label>Second Number</label>
+                                <input type="text" id="mixedNum2" placeholder="A5" value="A5">
+                                <select id="mixedSystem2">
+                                    <option value="hex">Hexadecimal</option>
+                                    <option value="binary">Binary</option>
+                                    <option value="decimal">Decimal</option>
+                                    <option value="octal">Octal</option>
+                                </select>
                             </div>
-                            <div class="step-by-step" id="divideHint" style="display: none;">
-                                <p>To divide numbers:</p>
-                                <ol>
-                                    <li>The first number is the dividend</li>
-                                    <li>All subsequent numbers are divisors</li>
-                                    <li>Example: 100, 5, 2 = 100 ÷ 5 ÷ 2 = 10</li>
-                                    <li>Division by zero is not allowed</li>
-                                </ol>
+                            <div class="input-group">
+                                <select id="mixedOperation">
+                                    <option value="add">Add</option>
+                                    <option value="subtract">Subtract</option>
+                                    <option value="multiply">Multiply</option>
+                                </select>
                             </div>
-                            <div id="divideResult" class="result"></div>
+                            <button onclick="mixedArithmetic()">Calculate</button>
+                            <div id="mixedArithmeticResult" class="result"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Algebra -->
-                <div id="algebra" class="module">
+                <!-- Exercises -->
+                <div id="exercises" class="module">
                     <div class="module-header">
-                        <i class="module-icon fas fa-square-root-variable"></i>
-                        <h2 class="module-title">Algebra Calculator</h2>
+                        <i class="module-icon fas fa-dumbbell"></i>
+                        <h2 class="module-title">Intensive Exercises</h2>
                     </div>
 
-                    <div class="learning-guide">
-                        <div class="guide-header">
-                            <i class="guide-icon fas fa-brain"></i>
-                            <h3 class="guide-title">Algebra Learning Guide</h3>
+                    <div class="exercise-container">
+                        <div class="exercise-header">
+                            <h3 class="exercise-title">Binary Conversion Exercise</h3>
+                            <span class="difficulty-badge difficulty-beginner">Beginner</span>
                         </div>
-                        <div class="guide-content">
-                            <p>Algebra helps us solve problems where some information is missing. We use letters (variables) to represent unknown values.</p>
-                            
-                            <div class="guide-step">
-                                <h4>📝 Linear Equations</h4>
-                                <p>Equations where the variable has power 1 (no squares or cubes).</p>
-                                <div class="example-box">
-                                    <div class="example-title">Example: 2x + 5 = 13</div>
-                                    <p><strong>How to solve:</strong></p>
-                                    <ol>
-                                        <li>Subtract 5 from both sides: 2x = 8</li>
-                                        <li>Divide both sides by 2: x = 4</li>
-                                    </ol>
-                                </div>
-                            </div>
-
-                            <div class="guide-step">
-                                <h4>📊 Quadratic Equations</h4>
-                                <p>Equations where the variable is squared (power of 2).</p>
-                                <div class="example-box">
-                                    <div class="example-title">Example: x² - 5x + 6 = 0</div>
-                                    <p><strong>How to solve:</strong></p>
-                                    <ol>
-                                        <li>Use quadratic formula: x = [-b ± √(b² - 4ac)] / 2a</li>
-                                        <li>Or factor: (x - 2)(x - 3) = 0</li>
-                                        <li>Solutions: x = 2 or x = 3</li>
-                                    </ol>
-                                </div>
-                            </div>
-
-                            <div class="guide-step">
-                                <h4>🔢 Systems of Equations</h4>
-                                <p>Multiple equations with multiple variables that must all be true.</p>
-                                <div class="example-box">
-                                    <div class="example-title">Example:</div>
-                                    <p>2x + 3y = 7<br>1x - 1y = 1</p>
-                                    <p><strong>Solution:</strong> x = 2, y = 1</p>
-                                </div>
+                        <div class="exercise-content">
+                            <p>Convert the decimal number 42 to binary:</p>
+                            <div class="exercise-options">
+                                <div class="exercise-option" onclick="checkAnswer(this, '101010')">101010</div>
+                                <div class="exercise-option" onclick="checkAnswer(this, '110100')">110100</div>
+                                <div class="exercise-option" onclick="checkAnswer(this, '101101')">101101</div>
+                                <div class="exercise-option" onclick="checkAnswer(this, '111000')">111000</div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="calculator-grid">
-                        <div class="calc-card">
-                            <div class="calc-title">Linear Equation Solver</div>
-                            <div class="input-group">
-                                <label>Enter equation: ax + b = c</label>
-                                <input type="number" id="linearA" placeholder="a" value="2">
-                                <input type="number" id="linearB" placeholder="b" value="5">
-                                <input type="number" id="linearC" placeholder="c" value="13">
-                                <div class="validation-error" id="linearError"></div>
-                            </div>
-                            <button onclick="solveLinearWithSteps()">Solve Equation</button>
-                            <div class="hint" onclick="toggleHint('linearHint')">
-                                <i class="fas fa-lightbulb"></i> Need help?
-                            </div>
-                            <div class="step-by-step" id="linearHint" style="display: none;">
-                                <p>To solve a linear equation ax + b = c:</p>
-                                <ol>
-                                    <li>Subtract b from both sides: ax = c - b</li>
-                                    <li>Divide both sides by a: x = (c - b) / a</li>
-                                </ol>
-                            </div>
-                            <div id="linearResult" class="result"></div>
-                            <div class="step-by-step" id="linearSteps" style="display: none;"></div>
-                        </div>
 
-                        <div class="calc-card">
-                            <div class="calc-title">Quadratic Equation Solver</div>
-                            <div class="input-group">
-                                <label>Enter coefficients: ax² + bx + c = 0</label>
-                                <input type="number" id="quadA" placeholder="a" value="1">
-                                <input type="number" id="quadB" placeholder="b" value="-3">
-                                <input type="number" id="quadC" placeholder="c" value="2">
-                                <div class="validation-error" id="quadError"></div>
-                            </div>
-                            <button onclick="solveQuadraticWithSteps()">Solve Quadratic</button>
-                            <div class="hint" onclick="toggleHint('quadHint')">
-                                <i class="fas fa-lightbulb"></i> Need help?
-                            </div>
-                            <div class="step-by-step" id="quadHint" style="display: none;">
-                                <p>To solve a quadratic equation ax² + bx + c = 0:</p>
-                                <ol>
-                                    <li>Calculate the discriminant: D = b² - 4ac</li>
-                                    <li>If D > 0: Two real solutions: x = (-b ± √D) / (2a)</li>
-                                    <li>If D = 0: One real solution: x = -b / (2a)</li>
-                                    <li>If D < 0: Two complex solutions</li>
-                                </ol>
-                            </div>
-                            <div id="quadraticResult" class="result"></div>
-                            <div class="step-by-step" id="quadSteps" style="display: none;"></div>
+                    <div class="exercise-container">
+                        <div class="exercise-header">
+                            <h3 class="exercise-title">Hexadecimal Addition</h3>
+                            <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
                         </div>
-
-                        <div class="calc-card">
-                            <div class="calc-title">System of Equations</div>
-                            <div class="input-group">
-                                <label>Equation 1: a₁x + b₁y = c₁</label>
-                                <input type="number" id="sysA1" placeholder="a₁" value="2">
-                                <input type="number" id="sysB1" placeholder="b₁" value="3">
-                                <input type="number" id="sysC1" placeholder="c₁" value="7">
+                        <div class="exercise-content">
+                            <p>Add the hexadecimal numbers: 1A + 2F = ?</p>
+                            <div class="exercise-options">
+                                <div class="exercise-option" onclick="checkAnswer(this, '49')">49</div>
+                                <div class="exercise-option" onclick="checkAnswer(this, '45')">45</div>
+                                <div class="exercise-option" onclick="checkAnswer(this, '4A')">4A</div>
+                                <div class="exercise-option" onclick="checkAnswer(this, '4F')">4F</div>
                             </div>
-                            <div class="input-group">
-                                <label>Equation 2: a₂x + b₂y = c₂</label>
-                                <input type="number" id="sysA2" placeholder="a₂" value="1">
-                                <input type="number" id="sysB2" placeholder="b₂" value="-1">
-                                <input type="number" id="sysC2" placeholder="c₂" value="1">
-                                <div class="validation-error" id="systemError"></div>
-                            </div>
-                            <button onclick="solveSystemWithSteps()">Solve System</button>
-                            <div class="hint" onclick="toggleHint('systemHint')">
-                                <i class="fas fa-lightbulb"></i> Need help?
-                            </div>
-                            <div class="step-by-step" id="systemHint" style="display: none;">
-                                <p>To solve a system of equations:</p>
-                                <ol>
-                                    <li>Calculate the determinant: D = a₁b₂ - a₂b₁</li>
-                                    <li>If D ≠ 0, unique solution exists</li>
-                                    <li>x = (c₁b₂ - c₂b₁) / D</li>
-                                    <li>y = (a₁c₂ - a₂c₁) / D</li>
-                                </ol>
-                            </div>
-                            <div id="systemResult" class="result"></div>
-                            <div class="step-by-step" id="systemSteps" style="display: none;"></div>
                         </div>
                     </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-header">
+                            <h3 class="exercise-title">Binary Multiplication</h3>
+                            <span class="difficulty-badge difficulty-advanced">Advanced</span>
+                        </div>
+                        <div class="exercise-content">
+                            <p>Multiply the binary numbers: 1101 × 101 = ?</p>
+                            <div class="exercise-options">
+                                <div class="exercise-option" onclick="checkAnswer(this, '1000001')">1000001</div>
+                                <div class="exercise-option" onclick="checkAnswer(this, '111001')">111001</div>
+                                <div class="exercise-option" onclick="checkAnswer(this, '101101')">101101</div>
+                                <div class="exercise-option" onclick="checkAnswer(this, '110111')">110111</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-header">
+                            <h3 class="exercise-title">Octal to Decimal Conversion</h3>
+                            <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+                        </div>
+                        <div class="exercise-content">
+                            <p>Convert the octal number 753 to decimal:</p>
+                            <div class="exercise-options">
+                                <div class="exercise-option" onclick="checkAnswer(this, '491')">491</div>
+                                <div class="exercise-option" onclick="checkAnswer(this, '483')">483</div>
+                                <div class="exercise-option" onclick="checkAnswer(this, '501')">501</div>
+                                <div class="exercise-option" onclick="checkAnswer(this, '475')">475</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="generateNewExercises()" style="width: 100%; margin-top: 2rem;">
+                        <i class="fas fa-sync-alt"></i> Generate New Exercises
+                    </button>
                 </div>
 
-                <!-- Other modules (Matrices, Quiz, Graphs, Progress) remain similar but with enhanced learning guides -->
-                <!-- Due to character limits, I'll show the structure for one more module -->
-
-                <!-- Matrices -->
-                <div id="matrices" class="module">
+                <!-- Quiz -->
+                <div id="quiz" class="module">
                     <div class="module-header">
-                        <i class="module-icon fas fa-table"></i>
-                        <h2 class="module-title">Matrix Calculator</h2>
+                        <i class="module-icon fas fa-brain"></i>
+                        <h2 class="module-title">Number Systems Mastery Quiz</h2>
                     </div>
 
-                    <div class="learning-guide">
-                        <div class="guide-header">
-                            <i class="guide-icon fas fa-project-diagram"></i>
-                            <h3 class="guide-title">Matrix Learning Guide</h3>
-                        </div>
-                        <div class="guide-content">
-                            <p>Matrices are powerful tools for organizing data and solving complex problems in mathematics, physics, and computer science.</p>
-                            
-                            <div class="guide-step">
-                                <h4>📋 What is a Matrix?</h4>
-                                <p>A rectangular array of numbers arranged in rows and columns.</p>
-                                <div class="example-box">
-                                    <div class="example-title">2×2 Matrix Example:</div>
-                                    <p>[1  2]<br>[3  4]</p>
-                                    <p>This matrix has 2 rows and 2 columns.</p>
-                                </div>
-                            </div>
-
-                            <div class="guide-step">
-                                <h4>➕ Matrix Addition</h4>
-                                <p>Add corresponding elements of two matrices of the same size.</p>
-                                <div class="example-box">
-                                    <div class="example-title">Example:</div>
-                                    <p>[1 2] + [5 6] = [6 8]<br>[3 4]   [7 8]   [10 12]</p>
-                                </div>
-                            </div>
-
-                            <div class="guide-step">
-                                <h4>✖️ Matrix Multiplication</h4>
-                                <p>More complex than addition - multiply rows by columns.</p>
-                                <div class="example-box">
-                                    <div class="example-title">Example:</div>
-                                    <p>[1 2] × [2 0] = [(1×2+2×1) (1×0+2×2)] = [4 4]<br>[3 4]   [1 2]   [(3×2+4×1) (3×0+4×2)]   [10 8]</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Matrix calculator content remains the same -->
-                    <div class="calculator-grid">
-                        <div class="calc-card">
-                            <div class="calc-title">Matrix Addition</div>
-                            <div class="input-group">
-                                <label>Matrix A (2x2)</label>
-                                <div class="matrix-input">
-                                    <div class="matrix-row">
-                                        <input type="number" id="addA11" value="1">
-                                        <input type="number" id="addA12" value="2">
-                                    </div>
-                                    <div class="matrix-row">
-                                        <input type="number" id="addA21" value="3">
-                                        <input type="number" id="addA22" value="4">
-                                    </div>
-                                </div>
-                                <label>Matrix B (2x2)</label>
-                                <div class="matrix-input">
-                                    <div class="matrix-row">
-                                        <input type="number" id="addB11" value="5">
-                                        <input type="number" id="addB12" value="6">
-                                    </div>
-                                    <div class="matrix-row">
-                                        <input type="number" id="addB21" value="7">
-                                        <input type="number" id="addB22" value="8">
-                                    </div>
-                                </div>
-                            </div>
-                            <button onclick="matrixOperation('add')">Add Matrices</button>
-                            <div id="matrixAddResult" class="result"></div>
+                    <div class="quiz-container">
+                        <div class="quiz-progress">
+                            <div class="quiz-progress-bar" id="quizProgress" style="width: 0%"></div>
                         </div>
 
-                        <div class="calc-card">
-                            <div class="calc-title">Matrix Multiplication</div>
-                            <div class="input-group">
-                                <label>Matrix A (2x2)</label>
-                                <div class="matrix-input">
-                                    <div class="matrix-row">
-                                        <input type="number" id="multA11" value="1">
-                                        <input type="number" id="multA12" value="2">
-                                    </div>
-                                    <div class="matrix-row">
-                                        <input type="number" id="multA21" value="3">
-                                        <input type="number" id="multA22" value="4">
-                                    </div>
-                                </div>
-                                <label>Matrix B (2x2)</label>
-                                <div class="matrix-input">
-                                    <div class="matrix-row">
-                                        <input type="number" id="multB11" value="2">
-                                        <input type="number" id="multB12" value="0">
-                                    </div>
-                                    <div class="matrix-row">
-                                        <input type="number" id="multB21" value="1">
-                                        <input type="number" id="multB22" value="2">
-                                    </div>
-                                </div>
-                            </div>
-                            <button onclick="matrixOperation('multiply')">Multiply Matrices</button>
-                            <div id="matrixMultResult" class="result"></div>
+                        <div class="quiz-question" id="quizQuestion">
+                            <div class="question-text" id="questionText">Loading question...</div>
+                            <div id="quizOptions"></div>
                         </div>
 
-                        <div class="calc-card">
-                            <div class="calc-title">Matrix Determinant</div>
-                            <div class="input-group">
-                                <label>Matrix (2x2)</label>
-                                <div class="matrix-input">
-                                    <div class="matrix-row">
-                                        <input type="number" id="det11" value="4">
-                                        <input type="number" id="det12" value="3">
-                                    </div>
-                                    <div class="matrix-row">
-                                        <input type="number" id="det21" value="2">
-                                        <input type="number" id="det22" value="1">
-                                    </div>
-                                </div>
+                        <div id="quizResult" style="display: none;">
+                            <div class="result">
+                                <h3>Quiz Completed!</h3>
+                                <p>Your Score: <span id="finalScore">0</span>/<span id="totalQuestions">0</span></p>
+                                <p id="performanceMessage"></p>
                             </div>
-                            <button onclick="matrixOperation('determinant')">Calculate Determinant</button>
-                            <div id="matrixDetResult" class="result"></div>
+                            <button onclick="startQuiz()" style="width: 100%; margin-top: 1rem;">
+                                <i class="fas fa-redo"></i> Take Another Quiz
+                            </button>
+                        </div>
+
+                        <div id="quizControls">
+                            <button onclick="submitAnswer()" id="submitBtn" disabled>Submit Answer</button>
+                            <button onclick="nextQuestion()" id="nextBtn" style="display: none;">Next Question</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Quiz, Graphs, and Progress modules would follow similar enhanced patterns -->
-                <!-- For brevity, I'll include the JavaScript that powers all this -->
+                <!-- Progress -->
+                <div id="progress" class="module">
+                    <div class="module-header">
+                        <i class="module-icon fas fa-trophy"></i>
+                        <h2 class="module-title">Your Progress</h2>
+                    </div>
 
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="progressProblems">0</div>
+                            <div class="stat-label">Exercises Completed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="progressConversions">0</div>
+                            <div class="stat-label">Conversions Mastered</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="progressQuizScore">0%</div>
+                            <div class="stat-label">Best Quiz Score</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="progressTime">0h</div>
+                            <div class="stat-label">Learning Time</div>
+                        </div>
+                    </div>
+
+                    <div class="learning-guide">
+                        <div class="guide-header">
+                            <i class="guide-icon fas fa-award"></i>
+                            <h3 class="guide-title">Achievements</h3>
+                        </div>
+                        <div class="guide-content">
+                            <div id="achievementsList">
+                                <span class="achievement-badge" id="beginnerBadge">🏆 Beginner</span>
+                                <span class="achievement-badge" id="converterBadge" style="display: none;">🔄 Converter Master</span>
+                                <span class="achievement-badge" id="binaryMasterBadge" style="display: none;">💻 Binary Expert</span>
+                                <span class="achievement-badge" id="hexMasterBadge" style="display: none;">🌈 Hex Pro</span>
+                                <span class="achievement-badge" id="quizMasterBadge" style="display: none;">🧠 Quiz Master</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="calc-card">
+                        <div class="calc-title">Learning Journey</div>
+                        <div class="result">
+                            <p><strong>Your Progress Timeline:</strong></p>
+                            <div id="progressTimeline">
+                                <p>🎯 Start your journey by exploring number systems</p>
+                                <p>🔄 Practice conversions between systems</p>
+                                <p>🧮 Master arithmetic in different bases</p>
+                                <p>🎓 Complete exercises to reinforce learning</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
     </div>
 
     <script>
-        // Chart instances storage
-        const chartInstances = {
-            linearChart: null,
-            quadraticChart: null,
-            progressChart: null
+        // User progress tracking
+        let userProgress = JSON.parse(localStorage.getItem('mathpp_progress')) || {
+            exercisesCompleted: 0,
+            conversionsMastered: 0,
+            quizScores: [],
+            timeSpent: 0,
+            achievements: ['beginner']
         };
 
-        // Activity history
-        let activityHistory = JSON.parse(localStorage.getItem('mathpp_activity')) || [];
-        let userStats = JSON.parse(localStorage.getItem('mathpp_stats')) || {
-            problemsSolved: 0,
-            accuracy: 0,
-            streak: 0,
-            timeSpent: 0
+        let quizState = {
+            currentQuestion: 0,
+            score: 0,
+            selectedAnswer: null,
+            questions: [],
+            quizActive: false
         };
 
         // Navigation
@@ -1230,310 +1257,679 @@
             document.getElementById(moduleId).classList.add('active');
             event.currentTarget.classList.add('active');
             
-            updateStats();
+            updateProgressStats();
             
-            if (moduleId === 'progress') {
-                updateProgressChart();
-                updateActivityHistory();
+            if (moduleId === 'quiz' && !quizState.quizActive) {
+                startQuiz();
             }
         }
 
-        // Helper functions
-        function toggleHint(hintId) {
-            const hint = document.getElementById(hintId);
-            hint.style.display = hint.style.display === 'none' ? 'block' : 'none';
+        // Number System Explorers
+        function exploreDecimal() {
+            const decimal = parseInt(document.getElementById('decimalInput').value);
+            if (isNaN(decimal)) return;
+            
+            const binary = decimal.toString(2);
+            const octal = decimal.toString(8);
+            const hex = decimal.toString(16).toUpperCase();
+            
+            document.getElementById('decimalResult').innerHTML = `
+                <strong>Decimal ${decimal} equals:</strong><br>
+                Binary: ${binary}<br>
+                Octal: ${octal}<br>
+                Hexadecimal: ${hex}
+            `;
+            
+            trackProgress('explorations');
         }
 
-        function addToHistory(activity) {
-            activityHistory.unshift({
-                activity: activity,
-                timestamp: new Date().toLocaleString()
-            });
-            
-            if (activityHistory.length > 10) {
-                activityHistory = activityHistory.slice(0, 10);
-            }
-            
-            localStorage.setItem('mathpp_activity', JSON.stringify(activityHistory));
-            updateActivityHistory();
-            
-            // Update stats
-            userStats.problemsSolved++;
-            userStats.streak++;
-            localStorage.setItem('mathpp_stats', JSON.stringify(userStats));
-            updateStats();
-        }
-
-        function updateActivityHistory() {
-            const historyContainer = document.getElementById('activityHistory');
-            if (!historyContainer) return;
-            
-            historyContainer.innerHTML = '';
-            
-            if (activityHistory.length === 0) {
-                historyContainer.innerHTML = '<p>No recent activity. Start solving problems!</p>';
+        function exploreBinary() {
+            const binary = document.getElementById('binaryInput').value;
+            if (!/^[01]+$/.test(binary)) {
+                document.getElementById('binaryResult').innerHTML = `<span class="error">Invalid binary number!</span>`;
                 return;
             }
             
-            activityHistory.forEach(item => {
-                const historyItem = document.createElement('div');
-                historyItem.className = 'history-item';
-                historyItem.innerHTML = `
-                    <div>${item.activity}</div>
-                    <small>${item.timestamp}</small>
-                `;
-                historyContainer.appendChild(historyItem);
-            });
+            const decimal = parseInt(binary, 2);
+            const octal = decimal.toString(8);
+            const hex = decimal.toString(16).toUpperCase();
+            
+            document.getElementById('binaryResult').innerHTML = `
+                <strong>Binary ${binary} equals:</strong><br>
+                Decimal: ${decimal}<br>
+                Octal: ${octal}<br>
+                Hexadecimal: ${hex}
+            `;
+            
+            trackProgress('explorations');
         }
 
-        function updateStats() {
-            document.getElementById('totalProblems').textContent = userStats.problemsSolved;
-            document.getElementById('accuracyRate').textContent = userStats.accuracy + '%';
-            document.getElementById('streakCount').textContent = userStats.streak;
-            document.getElementById('timeSpent').textContent = userStats.timeSpent + 'h';
-        }
-
-        // Arithmetic operations
-        function calculate(operation) {
-            const inputIds = {
-                'add': 'addNumbers',
-                'subtract': 'subtractNumbers', 
-                'multiply': 'multiplyNumbers',
-                'divide': 'divideNumbers'
-            };
-
-            const input = document.getElementById(inputIds[operation]).value;
-            const numbers = input.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
-
-            if (numbers.length < 2) {
-                showResult(operation, '<span class="error">Please enter at least 2 valid numbers</span>');
+        function exploreOctal() {
+            const octal = document.getElementById('octalInput').value;
+            if (!/^[0-7]+$/.test(octal)) {
+                document.getElementById('octalResult').innerHTML = `<span class="error">Invalid octal number!</span>`;
                 return;
             }
+            
+            const decimal = parseInt(octal, 8);
+            const binary = decimal.toString(2);
+            const hex = decimal.toString(16).toUpperCase();
+            
+            document.getElementById('octalResult').innerHTML = `
+                <strong>Octal ${octal} equals:</strong><br>
+                Decimal: ${decimal}<br>
+                Binary: ${binary}<br>
+                Hexadecimal: ${hex}
+            `;
+            
+            trackProgress('explorations');
+        }
 
-            let result;
-            try {
-                if (operation === 'add') {
-                    result = numbers.reduce((a, b) => a + b);
-                } else if (operation === 'subtract') {
-                    result = numbers.reduce((a, b) => a - b);
-                } else if (operation === 'multiply') {
-                    result = numbers.reduce((a, b) => a * b, 1);
-                } else if (operation === 'divide') {
-                    if (numbers.slice(1).some(n => n === 0)) {
-                        throw new Error('Division by zero');
+        function exploreHex() {
+            const hex = document.getElementById('hexInput').value.toUpperCase();
+            if (!/^[0-9A-F]+$/.test(hex)) {
+                document.getElementById('hexResult').innerHTML = `<span class="error">Invalid hexadecimal number!</span>`;
+                return;
+            }
+            
+            const decimal = parseInt(hex, 16);
+            const binary = decimal.toString(2);
+            const octal = decimal.toString(8);
+            
+            document.getElementById('hexResult').innerHTML = `
+                <strong>Hexadecimal ${hex} equals:</strong><br>
+                Decimal: ${decimal}<br>
+                Binary: ${binary}<br>
+                Octal: ${octal}
+            `;
+            
+            trackProgress('explorations');
+        }
+
+        // Conversion Functions
+        function decToBin() {
+            const decimal = parseInt(document.getElementById('decToBinInput').value);
+            if (isNaN(decimal)) return;
+            
+            const binary = decimal.toString(2);
+            document.getElementById('binaryConversionResult').innerHTML = 
+                `<span class="success">Decimal ${decimal} = Binary ${binary}</span>`;
+            
+            trackProgress('conversions');
+        }
+
+        function binToDec() {
+            const binary = document.getElementById('binToDecInput').value;
+            if (!/^[01]+$/.test(binary)) {
+                document.getElementById('binaryConversionResult').innerHTML = 
+                    `<span class="error">Invalid binary number!</span>`;
+                return;
+            }
+            
+            const decimal = parseInt(binary, 2);
+            document.getElementById('binaryConversionResult').innerHTML = 
+                `<span class="success">Binary ${binary} = Decimal ${decimal}</span>`;
+            
+            trackProgress('conversions');
+        }
+
+        function decToHex() {
+            const decimal = parseInt(document.getElementById('decToHexInput').value);
+            if (isNaN(decimal)) return;
+            
+            const hex = decimal.toString(16).toUpperCase();
+            document.getElementById('hexConversionResult').innerHTML = 
+                `<span class="success">Decimal ${decimal} = Hexadecimal ${hex}</span>`;
+            
+            trackProgress('conversions');
+        }
+
+        function hexToDec() {
+            const hex = document.getElementById('hexToDecInput').value.toUpperCase();
+            if (!/^[0-9A-F]+$/.test(hex)) {
+                document.getElementById('hexConversionResult').innerHTML = 
+                    `<span class="error">Invalid hexadecimal number!</span>`;
+                return;
+            }
+            
+            const decimal = parseInt(hex, 16);
+            document.getElementById('hexConversionResult').innerHTML = 
+                `<span class="success">Hexadecimal ${hex} = Decimal ${decimal}</span>`;
+            
+            trackProgress('conversions');
+        }
+
+        function binToHex() {
+            const binary = document.getElementById('binToHexInput').value;
+            if (!/^[01]+$/.test(binary)) {
+                document.getElementById('binHexConversionResult').innerHTML = 
+                    `<span class="error">Invalid binary number!</span>`;
+                return;
+            }
+            
+            const decimal = parseInt(binary, 2);
+            const hex = decimal.toString(16).toUpperCase();
+            document.getElementById('binHexConversionResult').innerHTML = 
+                `<span class="success">Binary ${binary} = Hexadecimal ${hex}</span>`;
+            
+            trackProgress('conversions');
+        }
+
+        function hexToBin() {
+            const hex = document.getElementById('hexToBinInput').value.toUpperCase();
+            if (!/^[0-9A-F]+$/.test(hex)) {
+                document.getElementById('binHexConversionResult').innerHTML = 
+                    `<span class="error">Invalid hexadecimal number!</span>`;
+                return;
+            }
+            
+            const decimal = parseInt(hex, 16);
+            const binary = decimal.toString(2);
+            document.getElementById('binHexConversionResult').innerHTML = 
+                `<span class="success">Hexadecimal ${hex} = Binary ${binary}</span>`;
+            
+            trackProgress('conversions');
+        }
+
+        function universalConvert() {
+            const input = document.getElementById('universalInput').value;
+            const fromSystem = document.getElementById('fromSystem').value;
+            const toSystem = document.getElementById('toSystem').value;
+            
+            let decimal;
+            
+            // Convert to decimal first
+            switch(fromSystem) {
+                case 'decimal':
+                    decimal = parseInt(input);
+                    break;
+                case 'binary':
+                    if (!/^[01]+$/.test(input)) {
+                        showError('Invalid binary number');
+                        return;
                     }
-                    result = numbers.reduce((a, b) => a / b);
-                }
-                
-                displayResult(operation, numbers, result);
-            } catch (error) {
-                showResult(operation, `<span class="error">Error: ${error.message}</span>`);
+                    decimal = parseInt(input, 2);
+                    break;
+                case 'octal':
+                    if (!/^[0-7]+$/.test(input)) {
+                        showError('Invalid octal number');
+                        return;
+                    }
+                    decimal = parseInt(input, 8);
+                    break;
+                case 'hex':
+                    if (!/^[0-9A-F]+$/i.test(input)) {
+                        showError('Invalid hexadecimal number');
+                        return;
+                    }
+                    decimal = parseInt(input, 16);
+                    break;
             }
-        }
-
-        function displayResult(operation, numbers, result) {
-            const operations = {'add': '+', 'subtract': '-', 'multiply': '×', 'divide': '÷'};
-            const expression = numbers.join(` ${operations[operation]} `);
             
-            showResult(operation, `<span class="success">${expression} = ${result}</span>`);
-            addToHistory(`Calculated: ${expression} = ${result}`);
-        }
-
-        function showResult(operation, message) {
-            document.getElementById(operation + 'Result').innerHTML = message;
-        }
-
-        // Algebra operations
-        function solveLinearWithSteps() {
-            const a = parseFloat(document.getElementById('linearA').value);
-            const b = parseFloat(document.getElementById('linearB').value);
-            const c = parseFloat(document.getElementById('linearC').value);
-            
-            if (a === 0) {
-                document.getElementById('linearError').textContent = 'Coefficient a cannot be zero';
-                document.getElementById('linearError').style.display = 'block';
+            if (isNaN(decimal)) {
+                showError('Invalid input number');
                 return;
             }
             
-            const x = (c - b) / a;
-            document.getElementById('linearResult').innerHTML = `<span class="success">Solution: x = ${x}</span>`;
+            // Convert from decimal to target system
+            let result;
+            switch(toSystem) {
+                case 'decimal':
+                    result = decimal.toString();
+                    break;
+                case 'binary':
+                    result = decimal.toString(2);
+                    break;
+                case 'octal':
+                    result = decimal.toString(8);
+                    break;
+                case 'hex':
+                    result = decimal.toString(16).toUpperCase();
+                    break;
+            }
             
-            const steps = document.getElementById('linearSteps');
-            steps.innerHTML = `
-                <h4>Step-by-Step Solution:</h4>
-                <p>1. Original equation: ${a}x + ${b} = ${c}</p>
-                <p>2. Subtract ${b} from both sides: ${a}x = ${c} - ${b}</p>
-                <p>3. Simplify: ${a}x = ${c - b}</p>
-                <p>4. Divide both sides by ${a}: x = ${c - b} / ${a}</p>
-                <p>5. Solution: x = ${x}</p>
-            `;
-            steps.style.display = 'block';
+            document.getElementById('universalResult').innerHTML = 
+                `<span class="success">${input} (${fromSystem}) = ${result} (${toSystem})</span>`;
             
-            addToHistory(`Solved linear equation: ${a}x + ${b} = ${c}`);
+            trackProgress('conversions');
         }
 
-        function solveQuadraticWithSteps() {
-            const a = parseFloat(document.getElementById('quadA').value);
-            const b = parseFloat(document.getElementById('quadB').value);
-            const c = parseFloat(document.getElementById('quadC').value);
+        // Arithmetic Functions
+        function binaryArithmetic() {
+            const num1 = document.getElementById('binaryNum1').value;
+            const num2 = document.getElementById('binaryNum2').value;
+            const operation = document.getElementById('binaryOperation').value;
             
-            if (a === 0) {
-                document.getElementById('quadError').textContent = 'This is not a quadratic equation (a = 0)';
-                document.getElementById('quadError').style.display = 'block';
+            if (!/^[01]+$/.test(num1) || !/^[01]+$/.test(num2)) {
+                document.getElementById('binaryArithmeticResult').innerHTML = 
+                    `<span class="error">Invalid binary numbers!</span>`;
                 return;
             }
             
-            const discriminant = b * b - 4 * a * c;
-            const steps = document.getElementById('quadSteps');
+            const dec1 = parseInt(num1, 2);
+            const dec2 = parseInt(num2, 2);
+            let result, binaryResult;
             
-            steps.innerHTML = `
-                <h4>Step-by-Step Solution:</h4>
-                <p>1. Calculate discriminant: D = b² - 4ac</p>
-                <p>2. D = ${b}² - 4×${a}×${c} = ${discriminant}</p>
-            `;
+            switch(operation) {
+                case 'add':
+                    result = dec1 + dec2;
+                    binaryResult = result.toString(2);
+                    document.getElementById('binaryArithmeticResult').innerHTML = 
+                        `<span class="success">${num1} + ${num2} = ${binaryResult}<br>(${dec1} + ${dec2} = ${result})</span>`;
+                    break;
+                case 'subtract':
+                    result = dec1 - dec2;
+                    binaryResult = result.toString(2);
+                    document.getElementById('binaryArithmeticResult').innerHTML = 
+                        `<span class="success">${num1} - ${num2} = ${binaryResult}<br>(${dec1} - ${dec2} = ${result})</span>`;
+                    break;
+                case 'multiply':
+                    result = dec1 * dec2;
+                    binaryResult = result.toString(2);
+                    document.getElementById('binaryArithmeticResult').innerHTML = 
+                        `<span class="success">${num1} × ${num2} = ${binaryResult}<br>(${dec1} × ${dec2} = ${result})</span>`;
+                    break;
+            }
             
-            if (discriminant > 0) {
-                const x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
-                const x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
-                steps.innerHTML += `
-                    <p>3. Since D > 0, two real solutions:</p>
-                    <p>4. x₁ = (-b + √D) / (2a) = (${-b} + ${Math.sqrt(discriminant).toFixed(2)}) / (2×${a}) = ${x1.toFixed(2)}</p>
-                    <p>5. x₂ = (-b - √D) / (2a) = (${-b} - ${Math.sqrt(discriminant).toFixed(2)}) / (2×${a}) = ${x2.toFixed(2)}</p>
-                `;
-                document.getElementById('quadraticResult').innerHTML = `<span class="success">Two real solutions: x₁ = ${x1.toFixed(2)}, x₂ = ${x2.toFixed(2)}</span>`;
-            } else if (discriminant === 0) {
-                const x = -b / (2 * a);
-                steps.innerHTML += `
-                    <p>3. Since D = 0, one real solution:</p>
-                    <p>4. x = -b / (2a) = ${-b} / (2×${a}) = ${x.toFixed(2)}</p>
-                `;
-                document.getElementById('quadraticResult').innerHTML = `<span class="success">One real solution: x = ${x.toFixed(2)}</span>`;
+            trackProgress('arithmetic');
+        }
+
+        function hexArithmetic() {
+            const num1 = document.getElementById('hexNum1').value.toUpperCase();
+            const num2 = document.getElementById('hexNum2').value.toUpperCase();
+            const operation = document.getElementById('hexOperation').value;
+            
+            if (!/^[0-9A-F]+$/.test(num1) || !/^[0-9A-F]+$/.test(num2)) {
+                document.getElementById('hexArithmeticResult').innerHTML = 
+                    `<span class="error">Invalid hexadecimal numbers!</span>`;
+                return;
+            }
+            
+            const dec1 = parseInt(num1, 16);
+            const dec2 = parseInt(num2, 16);
+            let result, hexResult;
+            
+            switch(operation) {
+                case 'add':
+                    result = dec1 + dec2;
+                    hexResult = result.toString(16).toUpperCase();
+                    document.getElementById('hexArithmeticResult').innerHTML = 
+                        `<span class="success">${num1} + ${num2} = ${hexResult}<br>(${dec1} + ${dec2} = ${result})</span>`;
+                    break;
+                case 'subtract':
+                    result = dec1 - dec2;
+                    hexResult = result.toString(16).toUpperCase();
+                    document.getElementById('hexArithmeticResult').innerHTML = 
+                        `<span class="success">${num1} - ${num2} = ${hexResult}<br>(${dec1} - ${dec2} = ${result})</span>`;
+                    break;
+            }
+            
+            trackProgress('arithmetic');
+        }
+
+        function mixedArithmetic() {
+            const num1 = document.getElementById('mixedNum1').value;
+            const num2 = document.getElementById('mixedNum2').value;
+            const system1 = document.getElementById('mixedSystem1').value;
+            const system2 = document.getElementById('mixedSystem2').value;
+            const operation = document.getElementById('mixedOperation').value;
+            
+            let dec1, dec2;
+            
+            // Convert first number to decimal
+            switch(system1) {
+                case 'decimal':
+                    dec1 = parseInt(num1);
+                    break;
+                case 'binary':
+                    if (!/^[01]+$/.test(num1)) {
+                        showError('Invalid binary number');
+                        return;
+                    }
+                    dec1 = parseInt(num1, 2);
+                    break;
+                case 'octal':
+                    if (!/^[0-7]+$/.test(num1)) {
+                        showError('Invalid octal number');
+                        return;
+                    }
+                    dec1 = parseInt(num1, 8);
+                    break;
+                case 'hex':
+                    if (!/^[0-9A-F]+$/i.test(num1)) {
+                        showError('Invalid hexadecimal number');
+                        return;
+                    }
+                    dec1 = parseInt(num1, 16);
+                    break;
+            }
+            
+            // Convert second number to decimal
+            switch(system2) {
+                case 'decimal':
+                    dec2 = parseInt(num2);
+                    break;
+                case 'binary':
+                    if (!/^[01]+$/.test(num2)) {
+                        showError('Invalid binary number');
+                        return;
+                    }
+                    dec2 = parseInt(num2, 2);
+                    break;
+                case 'octal':
+                    if (!/^[0-7]+$/.test(num2)) {
+                        showError('Invalid octal number');
+                        return;
+                    }
+                    dec2 = parseInt(num2, 8);
+                    break;
+                case 'hex':
+                    if (!/^[0-9A-F]+$/i.test(num2)) {
+                        showError('Invalid hexadecimal number');
+                        return;
+                    }
+                    dec2 = parseInt(num2, 16);
+                    break;
+            }
+            
+            if (isNaN(dec1) || isNaN(dec2)) {
+                showError('Invalid input numbers');
+                return;
+            }
+            
+            let result;
+            switch(operation) {
+                case 'add':
+                    result = dec1 + dec2;
+                    break;
+                case 'subtract':
+                    result = dec1 - dec2;
+                    break;
+                case 'multiply':
+                    result = dec1 * dec2;
+                    break;
+            }
+            
+            const binaryResult = result.toString(2);
+            const hexResult = result.toString(16).toUpperCase();
+            const octalResult = result.toString(8);
+            
+            document.getElementById('mixedArithmeticResult').innerHTML = 
+                `<span class="success">
+                    ${num1} (${system1}) ${getOperationSymbol(operation)} ${num2} (${system2}) = ${result}<br>
+                    Binary: ${binaryResult}<br>
+                    Hexadecimal: ${hexResult}<br>
+                    Octal: ${octalResult}
+                </span>`;
+            
+            trackProgress('arithmetic');
+        }
+
+        // Exercise Functions
+        function checkAnswer(element, correctAnswer) {
+            const options = element.parentElement.querySelectorAll('.exercise-option');
+            options.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+                opt.onclick = null; // Remove click handler
+            });
+            
+            if (element.textContent === correctAnswer) {
+                element.classList.add('correct');
+                setTimeout(() => {
+                    alert('✅ Correct! Well done!');
+                    trackProgress('exercises');
+                }, 100);
             } else {
-                const realPart = (-b / (2 * a)).toFixed(2);
-                const imaginaryPart = (Math.sqrt(-discriminant) / (2 * a)).toFixed(2);
-                steps.innerHTML += `
-                    <p>3. Since D < 0, two complex solutions:</p>
-                    <p>4. x = (-b ± √|D|i) / (2a)</p>
-                    <p>5. x = ${realPart} ± ${imaginaryPart}i</p>
-                `;
-                document.getElementById('quadraticResult').innerHTML = `<span class="success">Complex solutions: x = ${realPart} ± ${imaginaryPart}i</span>`;
+                element.classList.add('incorrect');
+                // Find and highlight correct answer
+                options.forEach(opt => {
+                    if (opt.textContent === correctAnswer) {
+                        opt.classList.add('correct');
+                    }
+                });
+                setTimeout(() => {
+                    alert('❌ Incorrect. The right answer was highlighted.');
+                }, 100);
             }
-            
-            steps.style.display = 'block';
-            addToHistory(`Solved quadratic equation: ${a}x² + ${b}x + ${c} = 0`);
         }
 
-        function solveSystemWithSteps() {
-            const a1 = parseFloat(document.getElementById('sysA1').value);
-            const b1 = parseFloat(document.getElementById('sysB1').value);
-            const c1 = parseFloat(document.getElementById('sysC1').value);
-            const a2 = parseFloat(document.getElementById('sysA2').value);
-            const b2 = parseFloat(document.getElementById('sysB2').value);
-            const c2 = parseFloat(document.getElementById('sysC2').value);
-            
-            const determinant = a1 * b2 - a2 * b1;
-            
-            if (determinant === 0) {
-                document.getElementById('systemError').textContent = 'No unique solution (determinant is zero)';
-                document.getElementById('systemError').style.display = 'block';
-                return;
-            }
-            
-            const x = (c1 * b2 - c2 * b1) / determinant;
-            const y = (a1 * c2 - a2 * c1) / determinant;
-            
-            const steps = document.getElementById('systemSteps');
-            steps.innerHTML = `
-                <h4>Step-by-Step Solution:</h4>
-                <p>1. Calculate determinant: D = a₁b₂ - a₂b₁ = ${a1}×${b2} - ${a2}×${b1} = ${determinant}</p>
-                <p>2. Calculate x: x = (c₁b₂ - c₂b₁) / D = (${c1}×${b2} - ${c2}×${b1}) / ${determinant} = ${x.toFixed(2)}</p>
-                <p>3. Calculate y: y = (a₁c₂ - a₂c₁) / D = (${a1}×${c2} - ${a2}×${c1}) / ${determinant} = ${y.toFixed(2)}</p>
-            `;
-            steps.style.display = 'block';
-            
-            document.getElementById('systemResult').innerHTML = `<span class="success">Solution: x = ${x.toFixed(2)}, y = ${y.toFixed(2)}</span>`;
-            addToHistory(`Solved system: ${a1}x + ${b1}y = ${c1}, ${a2}x + ${b2}y = ${c2}`);
+        function generateNewExercises() {
+            // In a full implementation, this would generate new random exercises
+            alert('New exercises generated! Refresh the page for new problems.');
         }
 
-        // Matrix operations
-        function matrixOperation(operation) {
-            try {
-                let result;
-                
-                if (operation === 'add') {
-                    const A = [
-                        [parseFloat(document.getElementById('addA11').value), parseFloat(document.getElementById('addA12').value)],
-                        [parseFloat(document.getElementById('addA21').value), parseFloat(document.getElementById('addA22').value)]
-                    ];
-                    const B = [
-                        [parseFloat(document.getElementById('addB11').value), parseFloat(document.getElementById('addB12').value)],
-                        [parseFloat(document.getElementById('addB21').value), parseFloat(document.getElementById('addB22').value)]
-                    ];
-                    
-                    result = [
-                        [A[0][0] + B[0][0], A[0][1] + B[0][1]],
-                        [A[1][0] + B[1][0], A[1][1] + B[1][1]]
-                    ];
-                    
-                    document.getElementById('matrixAddResult').innerHTML = `<span class="success">Result:<br>[
-                        [${result[0][0]}, ${result[0][1]}],<br>
-                        [${result[1][0]}, ${result[1][1]}]
-                    ]</span>`;
-                    
-                } else if (operation === 'multiply') {
-                    const A = [
-                        [parseFloat(document.getElementById('multA11').value), parseFloat(document.getElementById('multA12').value)],
-                        [parseFloat(document.getElementById('multA21').value), parseFloat(document.getElementById('multA22').value)]
-                    ];
-                    const B = [
-                        [parseFloat(document.getElementById('multB11').value), parseFloat(document.getElementById('multB12').value)],
-                        [parseFloat(document.getElementById('multB21').value), parseFloat(document.getElementById('multB22').value)]
-                    ];
-                    
-                    result = [
-                        [A[0][0]*B[0][0] + A[0][1]*B[1][0], A[0][0]*B[0][1] + A[0][1]*B[1][1]],
-                        [A[1][0]*B[0][0] + A[1][1]*B[1][0], A[1][0]*B[0][1] + A[1][1]*B[1][1]]
-                    ];
-                    
-                    document.getElementById('matrixMultResult').innerHTML = `<span class="success">Result:<br>[
-                        [${result[0][0]}, ${result[0][1]}],<br>
-                        [${result[1][0]}, ${result[1][1]}]
-                    ]</span>`;
-                    
-                } else if (operation === 'determinant') {
-                    const a = parseFloat(document.getElementById('det11').value);
-                    const b = parseFloat(document.getElementById('det12').value);
-                    const c = parseFloat(document.getElementById('det21').value);
-                    const d = parseFloat(document.getElementById('det22').value);
-                    
-                    result = a * d - b * c;
-                    document.getElementById('matrixDetResult').innerHTML = `<span class="success">Determinant = ${result}</span>`;
+        // Quiz System
+        function startQuiz() {
+            quizState = {
+                currentQuestion: 0,
+                score: 0,
+                selectedAnswer: null,
+                quizActive: true,
+                questions: generateQuizQuestions()
+            };
+            
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('quizQuestion').style.display = 'block';
+            document.getElementById('quizControls').style.display = 'block';
+            
+            loadQuestion();
+        }
+
+        function generateQuizQuestions() {
+            return [
+                {
+                    question: "What is the binary equivalent of decimal 15?",
+                    options: ["1111", "1010", "1100", "1001"],
+                    correct: 0
+                },
+                {
+                    question: "Convert hexadecimal 'A' to decimal:",
+                    options: ["10", "11", "12", "13"],
+                    correct: 0
+                },
+                {
+                    question: "What is 1011 (binary) + 1101 (binary)?",
+                    options: ["11000", "10000", "10111", "11100"],
+                    correct: 0
+                },
+                {
+                    question: "Convert octal 17 to decimal:",
+                    options: ["15", "17", "13", "19"],
+                    correct: 0
+                },
+                {
+                    question: "What is hexadecimal '1F' in binary?",
+                    options: ["11111", "11110", "11101", "11100"],
+                    correct: 0
                 }
-                
-                addToHistory(`Performed matrix ${operation}`);
-                
-            } catch (error) {
-                document.getElementById('matrix' + operation.charAt(0).toUpperCase() + operation.slice(1) + 'Result').innerHTML = 
-                    '<span class="error">Error: Please check your inputs</span>';
+            ];
+        }
+
+        function loadQuestion() {
+            const q = quizState.questions[quizState.currentQuestion];
+            document.getElementById('questionText').textContent = q.question;
+            
+            const optionsDiv = document.getElementById('quizOptions');
+            optionsDiv.innerHTML = '';
+            
+            q.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'exercise-option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectAnswer(index);
+                optionsDiv.appendChild(optionDiv);
+            });
+            
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('quizProgress').style.width = 
+                `${((quizState.currentQuestion) / quizState.questions.length) * 100}%`;
+        }
+
+        function selectAnswer(index) {
+            const options = document.querySelectorAll('#quizOptions .exercise-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+            quizState.selectedAnswer = index;
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function submitAnswer() {
+            if (quizState.selectedAnswer === null) return;
+            
+            const q = quizState.questions[quizState.currentQuestion];
+            const options = document.querySelectorAll('#quizOptions .exercise-option');
+            
+            options.forEach((opt, index) => {
+                if (index === q.correct) {
+                    opt.classList.add('correct');
+                }
+                if (index === quizState.selectedAnswer && index !== q.correct) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            if (quizState.selectedAnswer === q.correct) {
+                quizState.score++;
+            }
+            
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            quizState.currentQuestion++;
+            
+            if (quizState.currentQuestion < quizState.questions.length) {
+                loadQuestion();
+                document.getElementById('submitBtn').style.display = 'inline-block';
+                document.getElementById('nextBtn').style.display = 'none';
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            const scorePercentage = Math.round((quizState.score / quizState.questions.length) * 100);
+            document.getElementById('finalScore').textContent = quizState.score;
+            document.getElementById('totalQuestions').textContent = quizState.questions.length;
+            
+            let message;
+            if (scorePercentage >= 90) message = "🎉 Excellent! You're a number systems master!";
+            else if (scorePercentage >= 70) message = "👍 Great job! Keep practicing!";
+            else if (scorePercentage >= 50) message = "📚 Good effort! Review the learning guide.";
+            else message = "💪 Keep learning! You'll improve with practice.";
+            
+            document.getElementById('performanceMessage').textContent = message;
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('quizQuestion').style.display = 'none';
+            document.getElementById('quizControls').style.display = 'none';
+            document.getElementById('quizProgress').style.width = '100%';
+            
+            // Update progress
+            userProgress.quizScores.push(scorePercentage);
+            if (scorePercentage > 80 && !userProgress.achievements.includes('quizMaster')) {
+                userProgress.achievements.push('quizMaster');
+                document.getElementById('quizMasterBadge').style.display = 'inline-flex';
+            }
+            saveProgress();
+        }
+
+        // Progress Tracking
+        function trackProgress(type) {
+            switch(type) {
+                case 'explorations':
+                    userProgress.exercisesCompleted += 0.5;
+                    break;
+                case 'conversions':
+                    userProgress.conversionsMastered++;
+                    userProgress.exercisesCompleted++;
+                    if (userProgress.conversionsMastered >= 10 && !userProgress.achievements.includes('converter')) {
+                        userProgress.achievements.push('converter');
+                        document.getElementById('converterBadge').style.display = 'inline-flex';
+                    }
+                    break;
+                case 'arithmetic':
+                    userProgress.exercisesCompleted++;
+                    if (userProgress.exercisesCompleted >= 20 && !userProgress.achievements.includes('binaryMaster')) {
+                        userProgress.achievements.push('binaryMaster');
+                        document.getElementById('binaryMasterBadge').style.display = 'inline-flex';
+                    }
+                    break;
+                case 'exercises':
+                    userProgress.exercisesCompleted++;
+                    if (userProgress.exercisesCompleted >= 15 && !userProgress.achievements.includes('hexMaster')) {
+                        userProgress.achievements.push('hexMaster');
+                        document.getElementById('hexMasterBadge').style.display = 'inline-flex';
+                    }
+                    break;
+            }
+            userProgress.timeSpent += 0.1;
+            saveProgress();
+            updateProgressStats();
+        }
+
+        function updateProgressStats() {
+            // Dashboard stats
+            document.getElementById('totalProblems').textContent = Math.floor(userProgress.exercisesCompleted);
+            document.getElementById('conversionMastery').textContent = userProgress.conversionsMastered;
+            
+            const avgScore = userProgress.quizScores.length > 0 ? 
+                Math.round(userProgress.quizScores.reduce((a, b) => a + b) / userProgress.quizScores.length) : 0;
+            document.getElementById('accuracyRate').textContent = avgScore + '%';
+            document.getElementById('quizScore').textContent = avgScore + '%';
+            
+            // Progress module stats
+            document.getElementById('progressProblems').textContent = Math.floor(userProgress.exercisesCompleted);
+            document.getElementById('progressConversions').textContent = userProgress.conversionsMastered;
+            document.getElementById('progressQuizScore').textContent = avgScore + '%';
+            document.getElementById('progressTime').textContent = Math.floor(userProgress.timeSpent) + 'h';
+        }
+
+        function saveProgress() {
+            localStorage.setItem('mathpp_progress', JSON.stringify(userProgress));
+        }
+
+        // Helper Functions
+        function showError(message) {
+            alert('Error: ' + message);
+        }
+
+        function getOperationSymbol(operation) {
+            switch(operation) {
+                case 'add': return '+';
+                case 'subtract': return '-';
+                case 'multiply': return '×';
+                default: return '';
             }
         }
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
-            updateStats();
-            updateActivityHistory();
+            updateProgressStats();
             
-            // Show welcome message for first-time users
+            // Show achievements
+            if (userProgress.achievements.includes('converter')) {
+                document.getElementById('converterBadge').style.display = 'inline-flex';
+            }
+            if (userProgress.achievements.includes('binaryMaster')) {
+                document.getElementById('binaryMasterBadge').style.display = 'inline-flex';
+            }
+            if (userProgress.achievements.includes('hexMaster')) {
+                document.getElementById('hexMasterBadge').style.display = 'inline-flex';
+            }
+            if (userProgress.achievements.includes('quizMaster')) {
+                document.getElementById('quizMasterBadge').style.display = 'inline-flex';
+            }
+            
+            // First-time welcome
             if (!localStorage.getItem('mathpp_welcome')) {
                 setTimeout(() => {
-                    alert('Welcome to Math++! Start with the Learning Guide to begin your math journey. 🚀');
+                    alert('Welcome to Math++ Number Systems Mastery! 🚀\nStart with the Learning Guide to understand different number systems.');
                     localStorage.setItem('mathpp_welcome', 'true');
                 }, 1000);
             }
         });
-
-        // Note: Quiz, Graphs, and Progress modules would have similar enhanced implementations
-        // The full implementation would include those complete modules as well
     </script>
 </body>
 </html>
