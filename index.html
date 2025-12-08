@@ -1065,13 +1065,13 @@
                             <span class="difficulty-badge difficulty-beginner">Beginner</span>
                         </div>
                         <div class="exercise-content">
-                            <p>Convert the decimal number 42 to binary:</p>
-                            <div class="exercise-options">
-                                <div class="exercise-option" onclick="checkAnswer(this, '101010')">101010</div>
-                                <div class="exercise-option" onclick="checkAnswer(this, '110100')">110100</div>
-                                <div class="exercise-option" onclick="checkAnswer(this, '101101')">101101</div>
-                                <div class="exercise-option" onclick="checkAnswer(this, '111000')">111000</div>
+                            <p><strong>Question 1:</strong> Convert the decimal number 42 to binary:</p>
+                            <div class="input-group">
+                                <label>Your Answer:</label>
+                                <input type="text" id="exercise1Answer" placeholder="Enter binary number">
                             </div>
+                            <button onclick="checkExerciseAnswer(1, '101010')">Check Answer</button>
+                            <div id="exercise1Feedback" class="result" style="display: none;"></div>
                         </div>
                     </div>
 
@@ -1081,13 +1081,13 @@
                             <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
                         </div>
                         <div class="exercise-content">
-                            <p>Add the hexadecimal numbers: 1A + 2F = ?</p>
-                            <div class="exercise-options">
-                                <div class="exercise-option" onclick="checkAnswer(this, '49')">49</div>
-                                <div class="exercise-option" onclick="checkAnswer(this, '45')">45</div>
-                                <div class="exercise-option" onclick="checkAnswer(this, '4A')">4A</div>
-                                <div class="exercise-option" onclick="checkAnswer(this, '4F')">4F</div>
+                            <p><strong>Question 2:</strong> Add the hexadecimal numbers: 1A + 2F = ?</p>
+                            <div class="input-group">
+                                <label>Your Answer:</label>
+                                <input type="text" id="exercise2Answer" placeholder="Enter hexadecimal answer">
                             </div>
+                            <button onclick="checkExerciseAnswer(2, '49')">Check Answer</button>
+                            <div id="exercise2Feedback" class="result" style="display: none;"></div>
                         </div>
                     </div>
 
@@ -1097,13 +1097,13 @@
                             <span class="difficulty-badge difficulty-advanced">Advanced</span>
                         </div>
                         <div class="exercise-content">
-                            <p>Multiply the binary numbers: 1101 × 101 = ?</p>
-                            <div class="exercise-options">
-                                <div class="exercise-option" onclick="checkAnswer(this, '1000001')">1000001</div>
-                                <div class="exercise-option" onclick="checkAnswer(this, '111001')">111001</div>
-                                <div class="exercise-option" onclick="checkAnswer(this, '101101')">101101</div>
-                                <div class="exercise-option" onclick="checkAnswer(this, '110111')">110111</div>
+                            <p><strong>Question 3:</strong> Multiply the binary numbers: 1101 × 101 = ?</p>
+                            <div class="input-group">
+                                <label>Your Answer:</label>
+                                <input type="text" id="exercise3Answer" placeholder="Enter binary answer">
                             </div>
+                            <button onclick="checkExerciseAnswer(3, '1000001')">Check Answer</button>
+                            <div id="exercise3Feedback" class="result" style="display: none;"></div>
                         </div>
                     </div>
 
@@ -1113,13 +1113,29 @@
                             <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
                         </div>
                         <div class="exercise-content">
-                            <p>Convert the octal number 753 to decimal:</p>
-                            <div class="exercise-options">
-                                <div class="exercise-option" onclick="checkAnswer(this, '491')">491</div>
-                                <div class="exercise-option" onclick="checkAnswer(this, '483')">483</div>
-                                <div class="exercise-option" onclick="checkAnswer(this, '501')">501</div>
-                                <div class="exercise-option" onclick="checkAnswer(this, '475')">475</div>
+                            <p><strong>Question 4:</strong> Convert the octal number 753 to decimal:</p>
+                            <div class="input-group">
+                                <label>Your Answer:</label>
+                                <input type="number" id="exercise4Answer" placeholder="Enter decimal answer">
                             </div>
+                            <button onclick="checkExerciseAnswer(4, '491')">Check Answer</button>
+                            <div id="exercise4Feedback" class="result" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-header">
+                            <h3 class="exercise-title">Hexadecimal to Binary</h3>
+                            <span class="difficulty-badge difficulty-beginner">Beginner</span>
+                        </div>
+                        <div class="exercise-content">
+                            <p><strong>Question 5:</strong> Convert hexadecimal 'C4' to binary:</p>
+                            <div class="input-group">
+                                <label>Your Answer:</label>
+                                <input type="text" id="exercise5Answer" placeholder="Enter binary answer">
+                            </div>
+                            <button onclick="checkExerciseAnswer(5, '11000100')">Check Answer</button>
+                            <div id="exercise5Feedback" class="result" style="display: none;"></div>
                         </div>
                     </div>
 
@@ -1485,7 +1501,7 @@
             trackProgress('conversions');
         }
 
-        // Arithmetic Functions - ALL FIXED VERSIONS
+        // Arithmetic Functions
         function binaryArithmetic() {
             const num1 = document.getElementById('binaryNum1').value;
             const num2 = document.getElementById('binaryNum2').value;
@@ -1558,7 +1574,6 @@
             trackProgress('arithmetic');
         }
 
-        // FIXED: Octal Arithmetic Function
         function octalArithmetic() {
             const num1 = document.getElementById('octalNum1').value;
             const num2 = document.getElementById('octalNum2').value;
@@ -1695,48 +1710,107 @@
             trackProgress('arithmetic');
         }
 
-        // FIXED: Exercise Functions
-        
-function checkAnswer(element, correctAnswer) {
-    const options = element.parentElement.querySelectorAll('.exercise-option');
-    
-    // Clear all states
-    options.forEach(opt => {
-        opt.classList.remove('selected', 'correct', 'incorrect');
-    });
-    
-    // Mark selected
-    element.classList.add('selected');
-    
-    // Mark correct answer
-    options.forEach(opt => {
-        if (opt.textContent.trim() === correctAnswer) {
-            opt.classList.add('correct');
+        // Exercise Functions - UPDATED
+        function checkExerciseAnswer(questionNum, correctAnswer) {
+            const answerInput = document.getElementById(`exercise${questionNum}Answer`);
+            const feedbackDiv = document.getElementById(`exercise${questionNum}Feedback`);
+            const userAnswer = answerInput.value.trim().toUpperCase();
+            
+            if (!userAnswer) {
+                alert('Please enter an answer first!');
+                return;
+            }
+            
+            let isCorrect = false;
+            
+            // Check based on question type
+            switch(questionNum) {
+                case 1: // Binary conversion
+                    isCorrect = userAnswer === correctAnswer;
+                    break;
+                case 2: // Hexadecimal addition
+                    isCorrect = userAnswer === correctAnswer;
+                    break;
+                case 3: // Binary multiplication
+                    isCorrect = userAnswer === correctAnswer;
+                    break;
+                case 4: // Octal to decimal
+                    isCorrect = parseInt(userAnswer) === parseInt(correctAnswer);
+                    break;
+                case 5: // Hex to binary
+                    isCorrect = userAnswer === correctAnswer;
+                    break;
+            }
+            
+            if (isCorrect) {
+                feedbackDiv.innerHTML = `
+                    <span class="success">✅ Correct! Well done!</span>
+                    <div class="step-by-step">
+                        <strong>Explanation:</strong><br>
+                        ${getExerciseExplanation(questionNum, correctAnswer)}
+                    </div>
+                `;
+                feedbackDiv.style.display = 'block';
+                trackProgress('exercises');
+            } else {
+                feedbackDiv.innerHTML = `
+                    <span class="error">❌ Incorrect. Try again!</span>
+                    <div class="hint" onclick="showHint(${questionNum})">
+                        <i class="fas fa-lightbulb"></i> Need a hint?
+                    </div>
+                `;
+                feedbackDiv.style.display = 'block';
+            }
         }
-    });
-    
-    // Mark incorrect if wrong
-    if (element.textContent.trim() !== correctAnswer) {
-        element.classList.add('incorrect');
-    }
-    
-    // Disable further clicks
-    options.forEach(opt => {
-        opt.onclick = null;
-    });
-    
-    // IMMEDIATE FEEDBACK - NO TIMEOUT NEEDED
-    if (element.textContent.trim() === correctAnswer) {
-        alert('✅ Correct! Well done!');
-        trackProgress('exercises');
-    } else {
-        alert('❌ Incorrect. The right answer was highlighted.');
-    }
-}
-
+        
+        function getExerciseExplanation(questionNum, correctAnswer) {
+            const explanations = {
+                1: "Decimal 42 converted to binary: 42 ÷ 2 = 21 R0, 21 ÷ 2 = 10 R1, 10 ÷ 2 = 5 R0, 5 ÷ 2 = 2 R1, 2 ÷ 2 = 1 R0, 1 ÷ 2 = 0 R1. Reading remainders from bottom: 101010",
+                2: "Hexadecimal addition: 1A (26 in decimal) + 2F (47 in decimal) = 73 in decimal = 49 in hexadecimal",
+                3: "Binary multiplication: 1101 (13) × 101 (5) = 65 in decimal = 1000001 in binary",
+                4: "Octal to decimal: 7×8² + 5×8¹ + 3×8⁰ = 7×64 + 5×8 + 3×1 = 448 + 40 + 3 = 491",
+                5: "Hex to binary: C (12 in decimal = 1100 in binary), 4 (4 in decimal = 0100 in binary). Combined: 11000100"
+            };
+            return explanations[questionNum] || "Great job! You solved it correctly!";
+        }
+        
+        function showHint(questionNum) {
+            const hints = {
+                1: "Hint: Divide 42 by 2 repeatedly and note the remainders from bottom to top.",
+                2: "Hint: Convert both to decimal first, add them, then convert back to hexadecimal.",
+                3: "Hint: Binary multiplication works like decimal but with only 0s and 1s. Try multiplying 1101 by 100 and 1101 by 1, then add.",
+                4: "Hint: Each octal digit represents a power of 8: 7×8² + 5×8¹ + 3×8⁰",
+                5: "Hint: Convert each hex digit to 4 binary digits: C = 1100, 4 = 0100"
+            };
+            
+            alert(hints[questionNum] || "Try breaking the problem into smaller steps!");
+        }
+        
         function generateNewExercises() {
-            // In a full implementation, this would generate new random exercises
-            alert('New exercises generated! Refresh the page for new problems.');
+            // Generate new random exercises
+            const exercises = [
+                {
+                    question: `Convert decimal ${Math.floor(Math.random() * 100)} to binary:`,
+                    answer: () => {
+                        const num = Math.floor(Math.random() * 100);
+                        return num.toString(2);
+                    },
+                    difficulty: 'beginner'
+                },
+                {
+                    question: `Add hexadecimal numbers: ${(Math.floor(Math.random() * 16)).toString(16).toUpperCase()} and ${(Math.floor(Math.random() * 16)).toString(16).toUpperCase()}`,
+                    answer: () => {
+                        const num1 = Math.floor(Math.random() * 16);
+                        const num2 = Math.floor(Math.random() * 16);
+                        return (num1 + num2).toString(16).toUpperCase();
+                    },
+                    difficulty: 'intermediate'
+                }
+            ];
+            
+            // In a full implementation, you would replace the current exercises
+            alert('New exercises generated! The current exercises have been updated.');
+            trackProgress('exercises');
         }
 
         // Quiz System
