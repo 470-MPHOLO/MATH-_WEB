@@ -282,7 +282,6 @@
             font-size: 1.1rem;
         }
 
-        /* Number System Specific */
         .number-system-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -320,7 +319,6 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Exercise Section */
         .exercise-container {
             background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
             border-radius: 15px;
@@ -394,7 +392,6 @@
             background: #fee2e2;
         }
 
-        /* Quiz Styles */
         .quiz-container {
             max-width: 800px;
             margin: 0 auto;
@@ -430,7 +427,6 @@
             color: var(--dark);
         }
 
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -459,7 +455,6 @@
             font-weight: 500;
         }
 
-        /* Learning Guide */
         .learning-guide {
             background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
             border-radius: 15px;
@@ -517,7 +512,6 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Hint and Step-by-Step */
         .hint {
             background: #fff3cd;
             border: 1px solid #ffeaa7;
@@ -538,7 +532,6 @@
             border-radius: 0 8px 8px 0;
         }
 
-        /* Responsive */
         @media (max-width: 1024px) {
             .main-layout {
                 grid-template-columns: 1fr;
@@ -565,7 +558,6 @@
             }
         }
 
-        /* Badges */
         .achievement-badge {
             display: inline-flex;
             align-items: center;
@@ -578,7 +570,6 @@
             font-weight: 600;
         }
 
-        /* Loading */
         .loading {
             display: inline-block;
             width: 20px;
@@ -1494,7 +1485,7 @@
             trackProgress('conversions');
         }
 
-        // Arithmetic Functions
+        // Arithmetic Functions - ALL FIXED VERSIONS
         function binaryArithmetic() {
             const num1 = document.getElementById('binaryNum1').value;
             const num2 = document.getElementById('binaryNum2').value;
@@ -1561,6 +1552,45 @@
                     hexResult = result.toString(16).toUpperCase();
                     document.getElementById('hexArithmeticResult').innerHTML = 
                         `<span class="success">${num1} - ${num2} = ${hexResult}<br>(${dec1} - ${dec2} = ${result})</span>`;
+                    break;
+            }
+            
+            trackProgress('arithmetic');
+        }
+
+        // FIXED: Octal Arithmetic Function
+        function octalArithmetic() {
+            const num1 = document.getElementById('octalNum1').value;
+            const num2 = document.getElementById('octalNum2').value;
+            const operation = document.getElementById('octalOperation').value;
+            
+            if (!/^[0-7]+$/.test(num1) || !/^[0-7]+$/.test(num2)) {
+                document.getElementById('octalArithmeticResult').innerHTML = 
+                    `<span class="error">Invalid octal numbers! Only digits 0-7 allowed.</span>`;
+                return;
+            }
+            
+            const dec1 = parseInt(num1, 8);
+            const dec2 = parseInt(num2, 8);
+            let result, octalResult;
+            
+            switch(operation) {
+                case 'add':
+                    result = dec1 + dec2;
+                    octalResult = result.toString(8);
+                    document.getElementById('octalArithmeticResult').innerHTML = 
+                        `<span class="success">${num1} + ${num2} = ${octalResult}<br>(${dec1} + ${dec2} = ${result})</span>`;
+                    break;
+                case 'subtract':
+                    result = dec1 - dec2;
+                    if (result < 0) {
+                        document.getElementById('octalArithmeticResult').innerHTML = 
+                            `<span class="error">Result cannot be negative in octal arithmetic.</span>`;
+                        return;
+                    }
+                    octalResult = result.toString(8);
+                    document.getElementById('octalArithmeticResult').innerHTML = 
+                        `<span class="success">${num1} - ${num2} = ${octalResult}<br>(${dec1} - ${dec2} = ${result})</span>`;
                     break;
             }
             
@@ -1665,32 +1695,42 @@
             trackProgress('arithmetic');
         }
 
-        // Exercise Functions
+        // FIXED: Exercise Functions
         function checkAnswer(element, correctAnswer) {
             const options = element.parentElement.querySelectorAll('.exercise-option');
+            let answered = false;
+            
             options.forEach(opt => {
                 opt.classList.remove('selected', 'correct', 'incorrect');
-                opt.onclick = null; // Remove click handler
+                if (opt === element) {
+                    opt.classList.add('selected');
+                    answered = true;
+                }
             });
             
-            if (element.textContent === correctAnswer) {
-                element.classList.add('correct');
-                setTimeout(() => {
+            if (!answered) return;
+            
+            // Find and highlight all correct/incorrect answers
+            options.forEach(opt => {
+                if (opt.textContent.trim() === correctAnswer) {
+                    opt.classList.add('correct');
+                } else if (opt === element && opt.textContent.trim() !== correctAnswer) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            // Check if selected answer is correct
+            const isCorrect = element.textContent.trim() === correctAnswer;
+            
+            // Show feedback after a short delay
+            setTimeout(() => {
+                if (isCorrect) {
                     alert('✅ Correct! Well done!');
                     trackProgress('exercises');
-                }, 100);
-            } else {
-                element.classList.add('incorrect');
-                // Find and highlight correct answer
-                options.forEach(opt => {
-                    if (opt.textContent === correctAnswer) {
-                        opt.classList.add('correct');
-                    }
-                });
-                setTimeout(() => {
+                } else {
                     alert('❌ Incorrect. The right answer was highlighted.');
-                }, 100);
-            }
+                }
+            }, 100);
         }
 
         function generateNewExercises() {
