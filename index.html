@@ -1256,7 +1256,6 @@
             quizActive: false
         };
 
-        // Navigation
         function showModule(moduleId) {
             document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1271,7 +1270,6 @@
             }
         }
 
-        // Number System Explorers
         function exploreDecimal() {
             const decimal = parseInt(document.getElementById('decimalInput').value);
             if (isNaN(decimal)) return;
@@ -1353,7 +1351,7 @@
             trackProgress('explorations');
         }
 
-        // Conversion Functions
+        // converting
         function decToBin() {
             const decimal = parseInt(document.getElementById('decToBinInput').value);
             if (isNaN(decimal)) return;
@@ -1445,7 +1443,6 @@
             
             let decimal;
             
-            // Convert to decimal first
             switch(fromSystem) {
                 case 'decimal':
                     decimal = parseInt(input);
@@ -1477,8 +1474,7 @@
                 showError('Invalid input number');
                 return;
             }
-            
-            // Convert from decimal to target system
+        
             let result;
             switch(toSystem) {
                 case 'decimal':
@@ -1501,7 +1497,6 @@
             trackProgress('conversions');
         }
 
-        // Arithmetic Functions
         function binaryArithmetic() {
             const num1 = document.getElementById('binaryNum1').value;
             const num2 = document.getElementById('binaryNum2').value;
@@ -1621,7 +1616,6 @@
             
             let dec1, dec2;
             
-            // Convert first number to decimal
             switch(system1) {
                 case 'decimal':
                     dec1 = parseInt(num1);
@@ -1649,7 +1643,6 @@
                     break;
             }
             
-            // Convert second number to decimal
             switch(system2) {
                 case 'decimal':
                     dec2 = parseInt(num2);
@@ -1710,7 +1703,6 @@
             trackProgress('arithmetic');
         }
 
-        // Exercise Functions - UPDATED
         function checkExerciseAnswer(questionNum, correctAnswer) {
             const answerInput = document.getElementById(`exercise${questionNum}Answer`);
             const feedbackDiv = document.getElementById(`exercise${questionNum}Feedback`);
@@ -1723,7 +1715,6 @@
             
             let isCorrect = false;
             
-            // Check based on question type
             switch(questionNum) {
                 case 1: // Binary conversion
                     isCorrect = userAnswer === correctAnswer;
@@ -1787,7 +1778,6 @@
         }
         
         function generateNewExercises() {
-            // Generate new random exercises
             const exercises = [
                 {
                     question: `Convert decimal ${Math.floor(Math.random() * 100)} to binary:`,
@@ -1813,7 +1803,6 @@
             trackProgress('exercises');
         }
 
-        // Quiz System
         function startQuiz() {
             quizState = {
                 currentQuestion: 0,
@@ -1941,7 +1930,6 @@
             document.getElementById('quizControls').style.display = 'none';
             document.getElementById('quizProgress').style.width = '100%';
             
-            // Update progress
             userProgress.quizScores.push(scorePercentage);
             if (scorePercentage > 80 && !userProgress.achievements.includes('quizMaster')) {
                 userProgress.achievements.push('quizMaster');
@@ -1950,7 +1938,6 @@
             saveProgress();
         }
 
-        // Progress Tracking
         function trackProgress(type) {
             switch(type) {
                 case 'explorations':
@@ -1985,7 +1972,6 @@
         }
 
         function updateProgressStats() {
-            // Dashboard stats
             document.getElementById('totalProblems').textContent = Math.floor(userProgress.exercisesCompleted);
             document.getElementById('conversionMastery').textContent = userProgress.conversionsMastered;
             
@@ -1994,7 +1980,6 @@
             document.getElementById('accuracyRate').textContent = avgScore + '%';
             document.getElementById('quizScore').textContent = avgScore + '%';
             
-            // Progress module stats
             document.getElementById('progressProblems').textContent = Math.floor(userProgress.exercisesCompleted);
             document.getElementById('progressConversions').textContent = userProgress.conversionsMastered;
             document.getElementById('progressQuizScore').textContent = avgScore + '%';
@@ -2005,7 +1990,7 @@
             localStorage.setItem('mathpp_progress', JSON.stringify(userProgress));
         }
 
-        // Helper Functions
+        
         function showError(message) {
             alert('Error: ' + message);
         }
@@ -2018,12 +2003,9 @@
                 default: return '';
             }
         }
-
-        // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
             updateProgressStats();
             
-            // Show achievements
             if (userProgress.achievements.includes('converter')) {
                 document.getElementById('converterBadge').style.display = 'inline-flex';
             }
@@ -2037,7 +2019,6 @@
                 document.getElementById('quizMasterBadge').style.display = 'inline-flex';
             }
             
-            // First-time welcome
             if (!localStorage.getItem('mathpp_welcome')) {
                 setTimeout(() => {
                     alert('Welcome to Math++ Number Systems Mastery! 🚀\nStart with the Learning Guide to understand different number systems.');
